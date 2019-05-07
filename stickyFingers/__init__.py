@@ -1,0 +1,1 @@
+from stickyFingers.player import ExamplePlayer as Player
