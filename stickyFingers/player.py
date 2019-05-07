@@ -1,5 +1,7 @@
 
-class ExamplePlayer:
+from board import *
+
+class Player:
     def __init__(self, colour):
         """
         This method is called once at the beginning of the game to initialise
@@ -12,6 +14,10 @@ class ExamplePlayer:
         strings "red", "green", or "blue" correspondingly.
         """
         # TODO: Set up state representation.
+        self.board = Board()
+        self.colour = colour
+        self.update(colour, ("MOVE", ((-3, 0), (-2, 0))))
+        self.board.print_board()
 
 
     def action(self):
@@ -48,3 +54,6 @@ class ExamplePlayer:
         the action/pass against the game rules).
         """
         # TODO: Update state representation in response to action.
+        self.board.update_board(colour, action)
+
+player = Player('red')
