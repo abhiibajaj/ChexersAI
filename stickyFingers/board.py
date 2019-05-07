@@ -3,6 +3,7 @@ class Board:
     def __init__(self):
         self.pieceList = ['red', 'blue', 'green']
         self.board = self.create_pieces()
+        self.pure_board = self.get_pure_board()
         print(self.board)
         
     
@@ -14,6 +15,14 @@ class Board:
                 pieces[coord] = piece
         return pieces
     
+    def get_pure_board(self):
+        """
+        Helper function taken from `print_board` to generate all valid
+        coordinates for a chex board.
+        """
+        ran = range(-3, +3+1)
+        return [(q,r) for q in ran for r in ran if -q-r in ran]
+
     def player_starts(self, colour):
 
         if colour == 'red':
@@ -40,6 +49,22 @@ class Board:
 
             del self.board[src]
             self.board[dest] = colour
+
+    # all exits for each color
+    def player_exits(self, colour):
+        """
+        Return the exits for a given piece colour
+        Arguments:
+        * `piece_colour` -- a String, ie. "red"
+        """
+        if colour == "red":
+            return [(3,-3), (3,-2), (3,-1), (3,0)]
+        elif colour == "green":
+            return [(-3,3), (-2,3), (-1,3), (0,3)]
+        elif colour == "blue":
+            return [(-3,0), (-2,-1), (-1,-2), (0,-3)]
+        else:
+            return []
 
     def print_board(self, message="", debug=False, **kwargs):
         # Set up the board template:

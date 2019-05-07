@@ -14,12 +14,29 @@ class Player:
         strings "red", "green", or "blue" correspondingly.
         """
         # TODO: Set up state representation.
-        self.board = Board()
+        self.boardInfo = Board()
+
         self.colour = colour
+
+        self.pieces = self.boardInfo.player_starts(colour)
+        self.exits = self.boardInfo.player_exits(colour)
+
+
         self.update(colour, ("MOVE", ((-3, 0), (-2, 0))))
-        self.board.print_board()
+        self.boardInfo.print_board()
 
 
+    
+
+    def is_exit(chex):
+        """
+        Given a chex coordinate, return if a given player can exit
+        Arguments:
+        * `chex` -- a 2 tuple of coordinates (x, y)
+        * `player` -- player is the String colour, ie. "red"
+        """
+        return chex in self.exits
+        
     def action(self):
         """
         This method is called at the beginning of each of your turns to request 
@@ -34,6 +51,76 @@ class Player:
         # TODO: Decide what action to take.
         return ("PASS", None)
 
+    def radial_moves(self, piece, radius):
+        """
+        Helper function to find all radial moves outward from a center coordinate.
+        Arguments:
+        * `piece` -- a 2 tuple of coordinates (x, y), taken as the center.
+        * `radius` -- the range of the radius outwards,
+            ie. radius 1 = a regular move
+                radius 2 = a jump move
+        """
+        
+        east      = (piece[0] + radius, piece[1])
+        west      = (piece[0] - radius, piece[1])
+        northwest = (piece[0]         , piece[1] - radius)
+        northeast = (piece[0] + radius, piece[1] - radius)
+        southwest = (piece[0] - radius, piece[1] + radius)
+        southeast = (piece[0]         , piece[1] + radius)
+
+        return [east, west, northeast, northwest, southeast, southwest]
+
+    def regular_moves(piece):
+        """
+        Find all valid regular moves a piece can make given a board state.
+        Arguments:
+        * `piece` -- a 2 tuple of coordinates (x, y)
+        * `board` -- a dictionary of { piece : player } representing the board state
+            where player is a String color, ie "red"
+        """
+        moves       = radial_moves(piece, 1)
+        valid_moves = []
+
+        # filter out invalid moves
+        for move in moves:
+            # if it is not occupied
+            if move not in self.boardInfo.board:
+                # if the move exists
+                if move in self.boardInfo.pure_board:
+                    # turn the move into a move tuple
+                    valid_move = (piece, move, "MOVE")
+                    valid_moves.append(valid_move)
+
+        return valid_moves
+        
+    def jump_moves(piece):
+        """
+        Find all valid jump moves a piece can make given a board state.
+        Arguments:
+        * `piece` -- a 2 tuple of coordinates (x, y)
+        * `board` -- a dictionary of { piece : player } representing the board state
+            where player is a String color, ie "red"
+        """
+        regular_moves = radial_moves(piece, 1)
+        jump_moves    = radial_moves(piece, 2)
+
+        valid_moves = []
+        # filter out invalid moves
+        # for surrounding move spaces
+        for (index, regular_move) in enumerate(regular_moves, 0):
+            # if there is someone to jump over
+            if regular_move in self.boardInfo.board:
+                # the position of the jump
+                jump_move = jump_moves[index]
+                # if the jump position is not occupied
+                if jump_move not in self.boardInfo.board:
+                    # if the jump is a space on the board
+                    if jump_move in self.boardInfo.pure_board:
+                        # turn the move into a move tuple
+                        valid_move = (piece, jump_move, "JUMP")
+                        valid_moves.append(valid_move)
+
+        return valid_moves
 
     def update(self, colour, action):
         """
@@ -54,6 +141,8 @@ class Player:
         the action/pass against the game rules).
         """
         # TODO: Update state representation in response to action.
-        self.board.update_board(colour, action)
+
+
+        self.boardInfo.update_board(colour, action)
 
 player = Player('red')
