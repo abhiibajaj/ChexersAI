@@ -58,7 +58,10 @@ class ExamplePlayer:
         return action
         """
 
-        self.maxn_strat.max_n(1, self.board_info.player_id[self.colour])
+        (_, action_to_take) = self.maxn_strat.max_n(3, self.board_info.player_id[self.colour])
+        self.update_pieces(action_to_take)
+
+        return action_to_take
 
     def uniform_cost_search(self, piece):
         """
@@ -116,7 +119,7 @@ class ExamplePlayer:
         return path[::-1]
 
     def update_pieces(self, action):
-
+        
         action_type = action[0]
         action_coords = action[1]
 
@@ -251,10 +254,8 @@ class ExamplePlayer:
         moves += self.regular_moves(piece)
 
         if referee_format:
-            new_moves = []
-            for move in moves:
-                new_moves += (move[2], (move[0], move[1]))
-            return new_moves
+            formatted = map(lambda x: (x[2], (x[0], x[1])), moves)
+            return list(formatted)
         else:
             return moves
 
@@ -295,3 +296,5 @@ class ExamplePlayer:
         for remove_coords in to_remove:
             self.pieces.remove(remove_coords)
 
+player = ExamplePlayer('red')
+player.action()
