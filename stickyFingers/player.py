@@ -246,6 +246,8 @@ class ExamplePlayer:
         # print(self.boardInfo.board)
 
         self.boardInfo.update_board(colour, action)
+
+        #if action[0] == "JUMP":
         for piece in self.pieces:
             print(piece)
             print(self.boardInfo.board[piece])

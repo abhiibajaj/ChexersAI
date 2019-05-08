@@ -1,11 +1,10 @@
 class Board:
-    
+
     def __init__(self):
         self.pieceList = ['red', 'blue', 'green']
         self.board = self.create_pieces()
         self.pure_board = self.get_pure_board()
-        
-    
+
     def create_pieces(self):
         pieces = {}
         for piece in self.pieceList:
@@ -13,43 +12,74 @@ class Board:
             for coord in start_coords:
                 pieces[coord] = piece
         return pieces
-    
+
     def get_pure_board(self):
         """
         Helper function taken from `print_board` to generate all valid
         coordinates for a chex board.
         """
         ran = range(-3, +3+1)
-        return [(q,r) for q in ran for r in ran if -q-r in ran]
+        return [(q, r) for q in ran for r in ran if -q-r in ran]
 
     def player_starts(self, colour):
 
         if colour == 'red':
-            return set([(-3,0), (-3,1), (-3,2), (-3,3)])
+            return set([(-3, 0), (-3, 1), (-3, 2), (-3, 3)])
         elif colour == 'blue':
-            return set([(0,3), (1,2), (2,1), (3, 0)])
+            return set([(0, 3), (1, 2), (2, 1), (3, 0)])
         elif colour == 'green':
-            return set([(0,-3), (1,-3), (2,-3), (3,-3)])
+            return set([(0, -3), (1, -3), (2, -3), (3, -3)])
 
     def update_board(self, colour, action):
-        
+
         action_type = action[0]
         action_coords = action[1]
 
         if action_type == "PASS":
             pass
-        
+
         elif action_type == "EXIT":
             del self.board[action_coords]
 
         else:
+            # make the move
             src = action_coords[0]
             dest = action_coords[1]
 
             del self.board[src]
             self.board[dest] = colour
 
+            # see if we jumped over another colour
+            if action_type == "JUMP":
+                jumped = self.jumped_coord(colour, action)
+                # if we did, change its colour
+                self.board[jumped] = colour
+
+    def jumped_coord(self, colour, action):
+        # do maths
+        print(action)
+        # get player coord we jumped over
+        src = action[1][0]
+        dst = action[1][1]
+
+        xdir = dst[0] - src[0]
+        ydir = dst[1] - src[1]
+
+        jumpedx = self.piece_sign(xdir)
+        jumpedy = self.piece_sign(ydir)
+
+        return (jumpedx, jumpedy)
+
+    def piece_sign(self, pdir):
+        if pdir == 0:
+            return 0
+        elif pdir > 0:
+            return 1
+        else pdir < 0:
+            return -1
+
     # all exits for each color
+
     def player_exits(self, colour):
         """
         Return the exits for a given piece colour
@@ -57,11 +87,11 @@ class Board:
         * `piece_colour` -- a String, ie. "red"
         """
         if colour == "red":
-            return [(3,-3), (3,-2), (3,-1), (3,0)]
+            return [(3, -3), (3, -2), (3, -1), (3, 0)]
         elif colour == "green":
-            return [(-3,3), (-2,3), (-1,3), (0,3)]
+            return [(-3, 3), (-2, 3), (-1, 3), (0, 3)]
         elif colour == "blue":
-            return [(-3,0), (-2,-1), (-1,-2), (0,-3)]
+            return [(-3, 0), (-2, -1), (-1, -2), (0, -3)]
         else:
             return []
 
@@ -114,16 +144,14 @@ class Board:
         # prepare the provided board contents as strings, formatted to size.
         ran = range(-3, +3+1)
         cells = []
-        
-        for qr in [(q,r) for q in ran for r in ran if -q-r in ran]:
+
+        for qr in [(q, r) for q in ran for r in ran if -q-r in ran]:
             if qr in self.board:
                 cell = str(self.board[qr]).center(5)
             else:
-                cell = "     " # 5 spaces will fill a cell
+                cell = "     "  # 5 spaces will fill a cell
             cells.append(cell)
 
         # fill in the template to create the board drawing, then print!
         board = template.format(message, *cells)
         print(board, **kwargs)
-        
-        
