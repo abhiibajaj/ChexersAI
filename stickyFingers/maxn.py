@@ -14,11 +14,12 @@ class MaxN:
 
         return terminal
 
-    def heuristic(self):
-        return (1, 1, 1)
-
-    def make_possible_board_states(self):
-        return []
+    def heuristic(self, player_colour, board_info):
+        score = [0, 0, 0]
+        player_id = self.get_player_id(player_colour)
+        score[player_id] += board_info.scores[player_colour]
+        # print("SCORE: ", score)
+        return score
 
     def max_n(self, depth, player_colour, board_info):
 
@@ -27,11 +28,11 @@ class MaxN:
         best_a = ("PASS", None)
 
         if depth == 0 or self.is_terminal_board():
-            return (self.heuristic(), best_a)
+            return (self.heuristic(player_colour, board_info), best_a)
 
 
         vmax = (float('-inf'), float('-inf'), float('-inf'))
-
+        
         for piece in self.player.pieces:
             # proper formatting 
             all_moves = self.player.find_moves(piece)
@@ -41,10 +42,10 @@ class MaxN:
                 
 
                 proper_move = (move[2], (move[0], move[1]))
+                print(board_info.board)
 
                 board_info_copy.update_board(player_colour, proper_move)
-                # print(board_info.board)
-                # print(board_info_copy.board)
+                print(board_info_copy.board)
 
                 (score, _) = self.max_n(depth - 1, 
                                         self.get_next_colour(player_colour),
@@ -53,7 +54,7 @@ class MaxN:
                 if score[player_id] > vmax[player_id]:
                     vmax = score
                     best_a = (move[2], (move[0], move[1]))
-        print(best_a)
+        
         return (vmax, best_a)
 
     def get_player_id(self, player_colour):
