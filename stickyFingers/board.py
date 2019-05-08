@@ -55,11 +55,9 @@ class Board:
                 # if we did, change its colour
                 self.board[jumped] = colour
                 
-                print(self.board)
 
     def jumped_coord(self, colour, action):
         # do maths
-        print(action)
         # get player coord we jumped over
         src = action[1][0]
         dst = action[1][1]

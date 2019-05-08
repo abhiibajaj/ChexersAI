@@ -21,7 +21,6 @@ class ExamplePlayer:
         self.colour = colour
 
         self.pieces = self.boardInfo.player_starts(colour)
-        print(self.pieces)
         self.exits = self.boardInfo.player_exits(colour)
 
         # self.update(colour, ("MOVE", ((-3, 0), (-2, 0))))
@@ -48,13 +47,10 @@ class ExamplePlayer:
         actions.
         """
         # TODO: Decide what action to take.
-        print(self.pieces)
         for piece in self.pieces:
             path = self.uniform_cost_search(piece)
             action = path[0]
-            print(path)
             break
-        print(action)
         self.update_pieces(action)
         return action
 
@@ -115,7 +111,6 @@ class ExamplePlayer:
 
     def update_pieces(self, action):
         
-        print(action)
         action_type = action[0]
         action_coords = action[1]
 
@@ -138,7 +133,6 @@ class ExamplePlayer:
                 
     def jumped_coord(self, action):
         # do maths
-        print(action)
         # get player coord we jumped over
         src = action[1][0]
         dst = action[1][1]
@@ -279,13 +273,10 @@ class ExamplePlayer:
 
         to_remove = set()
         #if action[0] == "JUMP":
-        print("MY COLOUR PIECES", self.pieces)
         
         for piece in self.pieces:
-            print(self.boardInfo.board[piece])
             if self.boardInfo.board[piece] != self.colour:
-                print("HIIII")
-                print("\n\n\n")
+               
 
                 to_remove.add(piece)
         
