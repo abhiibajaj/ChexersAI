@@ -47,7 +47,6 @@ class Board:
         elif action_type == "EXIT":
             # keep score
             self.scores[colour] += 1
-            print(self.scores)
             del self.board[action_coords]
 
         else:

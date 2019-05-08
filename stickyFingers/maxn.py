@@ -1,6 +1,9 @@
 import copy
 class MaxN:
        
+    def __init__(self, player, board_info):
+        self.player = player
+        self.board_info = board_info
         
     def is_terminal_board(self):
         # check that a player is 1 move away from winning
@@ -29,8 +32,10 @@ class MaxN:
 
 
         vmax = (float('-inf'), float('-inf'), float('-inf'))
-        
-        player_pieces = list(filter(lamda x: if x.value == player_colour, board_info.board))
+        player_pieces = set()
+        for piece_coord, piece_colour in board_info.board.items():
+            if piece_colour == player_colour:
+                player_pieces.add(piece_coord)
 
         for piece in player_pieces:
             # proper formatting 
@@ -41,10 +46,9 @@ class MaxN:
                 
 
                 proper_move = (move[2], (move[0], move[1]))
-                print(board_info.board)
-
+                if move[2] == "EXIT":
+                    proper_move = (move[2], (move[0]))
                 board_info_copy.update_board(player_colour, proper_move)
-                print(board_info_copy.board)
 
                 (score, _) = self.max_n(depth - 1, 
                                         self.get_next_colour(player_colour),
@@ -53,6 +57,7 @@ class MaxN:
                 if score[player_id] > vmax[player_id]:
                     vmax = score
                     best_a = (move[2], (move[0], move[1]))
+            break
         
         return (vmax, best_a)
 
