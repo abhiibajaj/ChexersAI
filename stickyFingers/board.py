@@ -9,11 +9,7 @@ class Board:
             'green': 0,
             'blue': 0
         }
-        self.player_id = {
-            'red': 0,
-            'green': 1,
-            'blue': 2
-        }
+
 
     def create_pieces(self):
         pieces = {}
