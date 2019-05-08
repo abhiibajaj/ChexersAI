@@ -48,9 +48,11 @@ class ExamplePlayer:
         actions.
         """
         # TODO: Decide what action to take.
+        print(self.pieces)
         for piece in self.pieces:
             path = self.uniform_cost_search(piece)
             action = path[0]
+            print(path)
             break
         print(action)
         self.update_pieces(action)
@@ -247,12 +249,19 @@ class ExamplePlayer:
 
         self.boardInfo.update_board(colour, action)
 
+        to_remove = set()
         #if action[0] == "JUMP":
+        print("MY COLOUR PIECES", self.pieces)
+        
         for piece in self.pieces:
-            print(piece)
             print(self.boardInfo.board[piece])
             if self.boardInfo.board[piece] != self.colour:
                 print("HIIII")
-                print("/n/n/n")
-                self.pieces.remove(piece)
+                print("\n\n\n")
+
+                to_remove.add(piece)
+        
+        # Make this a func
+        for remove_coords in to_remove:
+            self.pieces.remove(remove_coords)
 

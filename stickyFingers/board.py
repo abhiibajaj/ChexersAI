@@ -54,6 +54,8 @@ class Board:
                 jumped = self.jumped_coord(colour, action)
                 # if we did, change its colour
                 self.board[jumped] = colour
+                
+                print(self.board)
 
     def jumped_coord(self, colour, action):
         # do maths
@@ -65,8 +67,8 @@ class Board:
         xdir = dst[0] - src[0]
         ydir = dst[1] - src[1]
 
-        jumpedx = self.piece_sign(xdir)
-        jumpedy = self.piece_sign(ydir)
+        jumpedx = src[0] + self.piece_sign(xdir)
+        jumpedy = src[1] + self.piece_sign(ydir)
 
         return (jumpedx, jumpedy)
 
@@ -75,7 +77,7 @@ class Board:
             return 0
         elif pdir > 0:
             return 1
-        else pdir < 0:
+        else:
             return -1
 
     # all exits for each color
