@@ -4,16 +4,17 @@ import sys
 import heapq
 from stickyFingers.maxn import *
 
+
 class ExamplePlayer:
     def __init__(self, colour):
         """
         This method is called once at the beginning of the game to initialise
         your player. You should use this opportunity to set up your own internal
-        representation of the game state, and any other information about the 
+        representation of the game state, and any other information about the
         game state you would like to maintain for the duration of the game.
 
-        The parameter colour will be a string representing the player your 
-        program will play as (Red, Green or Blue). The value will be one of the 
+        The parameter colour will be a string representing the player your
+        program will play as (Red, Green or Blue). The value will be one of the
         strings "red", "green", or "blue" correspondingly.
         """
         # TODO: Set up state representation.
@@ -27,8 +28,7 @@ class ExamplePlayer:
         self.maxn_strat = MaxN(self, self.board_info)
 
         # self.update(colour, ("MOVE", ((-3, 0), (-2, 0))))
-        # self.board_info.print_board(debug=True)        
-    
+        # self.board_info.print_board(debug=True)
 
     def is_exit(self, piece):
         """
@@ -37,16 +37,16 @@ class ExamplePlayer:
         * `piece` -- a 2 tuple of coordinates (x, y)
         """
         return piece in self.exits
-        
+
     def action(self):
         """
-        This method is called at the beginning of each of your turns to request 
+        This method is called at the beginning of each of your turns to request
         a choice of action from your program.
 
-        Based on the current state of the game, your player should select and 
-        return an allowed action to play on this turn. If there are no allowed 
-        actions, your player must return a pass instead. The action (or pass) 
-        must be represented based on the above instructions for representing 
+        Based on the current state of the game, your player should select and
+        return an allowed action to play on this turn. If there are no allowed
+        actions, your player must return a pass instead. The action (or pass)
+        must be represented based on the above instructions for representing
         actions.
         # TODO: Decide what action to take.
 
@@ -59,7 +59,6 @@ class ExamplePlayer:
         """
 
         self.maxn_strat.max_n(1, self.board_info.player_id[self.colour])
-
 
     def uniform_cost_search(self, piece):
         """
@@ -84,13 +83,13 @@ class ExamplePlayer:
         while openSet:
             steps, _, the_piece = heapq.heappop(openSet)
 
-            if self.is_exit(the_piece):            
+            if self.is_exit(the_piece):
                 # reconstruct the path that got us to the exit
                 return self.reconstruct_path(the_piece, closedSet)
 
             # find the moves this piece can make
             my_moves = self.find_moves(the_piece)
-            
+
             # for each move
             for move in my_moves:
                 steps_inc = steps + 1
@@ -100,15 +99,15 @@ class ExamplePlayer:
                 if dest not in closedSet.keys():
                     # it does, add it to the heap
                     closedSet[dest] = (move_type, (the_piece, dest))
-                    heapq.heappush(openSet, (steps_inc, distance_from_goal, dest))
+                    heapq.heappush(
+                        openSet, (steps_inc, distance_from_goal, dest))
         return ("PASS", None)
-
 
     def reconstruct_path(self, curr_coord, seen_moves):
         """
         Reconstruct a path from a uniform cost seach dictionary `seen_moves`
         """
-        path = [ ( "EXIT", curr_coord) ]
+        path = [("EXIT", curr_coord)]
         while seen_moves[curr_coord] != None:
 
             path.append(seen_moves[curr_coord])
@@ -117,13 +116,13 @@ class ExamplePlayer:
         return path[::-1]
 
     def update_pieces(self, action):
-        
+
         action_type = action[0]
         action_coords = action[1]
 
         if action_type == "PASS":
             pass
-        
+
         elif action_type == "EXIT":
             self.pieces.remove(action_coords)
         else:
@@ -137,7 +136,7 @@ class ExamplePlayer:
                 jumped = self.jumped_coord(action)
                 # if we did, change its colour
                 self.pieces.add(jumped)
-                
+
     def jumped_coord(self, action):
         # do maths
         # get player coord we jumped over
@@ -160,7 +159,6 @@ class ExamplePlayer:
         else:
             return -1
 
-
     def radial_moves(self, piece, radius):
         """
         Helper function to find all radial moves outward from a center coordinate.
@@ -170,13 +168,13 @@ class ExamplePlayer:
             ie. radius 1 = a regular move
                 radius 2 = a jump move
         """
-        
-        east      = (piece[0] + radius, piece[1])
-        west      = (piece[0] - radius, piece[1])
-        northwest = (piece[0]         , piece[1] - radius)
+
+        east = (piece[0] + radius, piece[1])
+        west = (piece[0] - radius, piece[1])
+        northwest = (piece[0], piece[1] - radius)
         northeast = (piece[0] + radius, piece[1] - radius)
         southwest = (piece[0] - radius, piece[1] + radius)
-        southeast = (piece[0]         , piece[1] + radius)
+        southeast = (piece[0], piece[1] + radius)
 
         return [east, west, northeast, northwest, southeast, southwest]
 
@@ -188,7 +186,7 @@ class ExamplePlayer:
         * `board` -- a dictionary of { piece : player } representing the board state
             where player is a String color, ie "red"
         """
-        moves       = self.radial_moves(piece, 1)
+        moves = self.radial_moves(piece, 1)
         valid_moves = []
 
         # filter out invalid moves
@@ -202,7 +200,7 @@ class ExamplePlayer:
                     valid_moves.append(valid_move)
 
         return valid_moves
-        
+
     def jump_moves(self, piece):
         """
         Find all valid jump moves a piece can make given a board state.
@@ -212,7 +210,7 @@ class ExamplePlayer:
             where player is a String color, ie "red"
         """
         regular_moves = self.radial_moves(piece, 1)
-        jump_moves    = self.radial_moves(piece, 2)
+        jump_moves = self.radial_moves(piece, 2)
 
         valid_moves = []
         # filter out invalid moves
@@ -232,8 +230,7 @@ class ExamplePlayer:
 
         return valid_moves
 
-
-    def find_moves(self, piece):
+    def find_moves(self, piece, referee_format=False):
         """
         All valid moves by a piece given a board state.
         Arguments:
@@ -252,7 +249,14 @@ class ExamplePlayer:
 
         # see where we can move normally
         moves += self.regular_moves(piece)
-        return moves
+
+        if referee_format:
+            new_moves = []
+            for move in moves:
+                new_moves += (move[2], (move[0], move[1]))
+            return new_moves
+        else:
+            return moves
 
     def update(self, colour, action):
         """
@@ -279,7 +283,7 @@ class ExamplePlayer:
         self.board_info.update_board(colour, action)
 
         to_remove = set()
-        #if action[0] == "JUMP":
+        # if action[0] == "JUMP":
         
         for piece in self.pieces:
             if self.board_info.board[piece] != self.colour:
