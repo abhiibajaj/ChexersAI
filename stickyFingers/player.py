@@ -52,6 +52,7 @@ class ExamplePlayer:
             path = self.uniform_cost_search(piece)
             action = path[0]
             break
+        print(action)
         self.update_pieces(action)
         return action
 
@@ -93,7 +94,7 @@ class ExamplePlayer:
                 # see if it goes anywhere new
                 if dest not in closedSet.keys():
                     # it does, add it to the heap
-                    closedSet[dest] = (move_type, the_piece, dest)
+                    closedSet[dest] = (move_type, (the_piece, dest))
                     heapq.heappush(openSet, (steps_inc, distance_from_goal, dest))
         return ("PASS", None)
 
@@ -106,12 +107,13 @@ class ExamplePlayer:
         while seen_moves[curr_coord] != None:
 
             path.append(seen_moves[curr_coord])
-            curr_coord = seen_moves[curr_coord][1]
+            curr_coord = seen_moves[curr_coord][1][0]
         # reverse it, so it goes start to end
         return path[::-1]
 
     def update_pieces(self, action):
         
+        print(action)
         action_type = action[0]
         action_coords = action[1]
 
@@ -241,6 +243,14 @@ class ExamplePlayer:
         """
         # TODO: Update state representation in response to action.
 
+        # print(self.boardInfo.board)
 
         self.boardInfo.update_board(colour, action)
+        for piece in self.pieces:
+            print(piece)
+            print(self.boardInfo.board[piece])
+            if self.boardInfo.board[piece] != self.colour:
+                print("HIIII")
+                print("/n/n/n")
+                self.pieces.remove(piece)
 
