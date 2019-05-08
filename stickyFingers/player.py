@@ -130,6 +130,34 @@ class ExamplePlayer:
 
             self.pieces.remove(src)
             self.pieces.add(dest)
+                        # see if we jumped over another colour
+            if action_type == "JUMP":
+                jumped = self.jumped_coord(action)
+                # if we did, change its colour
+                self.pieces.add(jumped)
+                
+    def jumped_coord(self, action):
+        # do maths
+        print(action)
+        # get player coord we jumped over
+        src = action[1][0]
+        dst = action[1][1]
+
+        xdir = dst[0] - src[0]
+        ydir = dst[1] - src[1]
+
+        jumpedx = src[0] + self.piece_sign(xdir)
+        jumpedy = src[1] + self.piece_sign(ydir)
+
+        return (jumpedx, jumpedy)
+
+    def piece_sign(self, pdir):
+        if pdir == 0:
+            return 0
+        elif pdir > 0:
+            return 1
+        else:
+            return -1
 
 
     def radial_moves(self, piece, radius):
