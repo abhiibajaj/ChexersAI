@@ -1,9 +1,9 @@
 
-from board import *
+from stickyFingers.board import *
 import sys
 import heapq
 
-class Player:
+class ExamplePlayer:
     def __init__(self, colour):
         """
         This method is called once at the beginning of the game to initialise
@@ -49,9 +49,11 @@ class Player:
         """
         # TODO: Decide what action to take.
         for piece in self.pieces:
-            self.uniform_cost_search(piece)
+            path = self.uniform_cost_search(piece)
+            action = path[0]
             break
-        return ("PASS", None)
+        self.update_pieces(action)
+        return action
 
     def uniform_cost_search(self, piece):
         """
@@ -242,4 +244,3 @@ class Player:
 
         self.boardInfo.update_board(colour, action)
 
-player = Player('red')
