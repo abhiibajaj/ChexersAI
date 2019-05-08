@@ -1,5 +1,7 @@
 
 from board import *
+import sys
+import heapq
 
 class Player:
     def __init__(self, colour):
@@ -19,23 +21,20 @@ class Player:
         self.colour = colour
 
         self.pieces = self.boardInfo.player_starts(colour)
+        print(self.pieces)
         self.exits = self.boardInfo.player_exits(colour)
 
-
-        self.update(colour, ("MOVE", ((-3, 0), (-2, 0))))
-        self.boardInfo.print_board()
-
-
+        # self.update(colour, ("MOVE", ((-3, 0), (-2, 0))))
+        # self.boardInfo.print_board(debug=True)        
     
 
-    def is_exit(chex):
+    def is_exit(self, piece):
         """
         Given a chex coordinate, return if a given player can exit
         Arguments:
-        * `chex` -- a 2 tuple of coordinates (x, y)
-        * `player` -- player is the String colour, ie. "red"
+        * `piece` -- a 2 tuple of coordinates (x, y)
         """
-        return chex in self.exits
+        return piece in self.exits
         
     def action(self):
         """
@@ -49,7 +48,83 @@ class Player:
         actions.
         """
         # TODO: Decide what action to take.
+        for piece in self.pieces:
+            self.uniform_cost_search(piece)
+            break
         return ("PASS", None)
+
+    def uniform_cost_search(self, piece):
+        """
+        A uniform cost search algorithm for finding an exit for a given piece
+
+        Arguments:
+        * `piece` -- a 2 tuple of coordinates (x, y)
+        * `board` -- a dictionary of { piece : player } representing the board state
+        * `player` -- player is the String colour, ie. "red"
+        """
+        openSet = []
+        heapq.heapify(openSet)
+
+        closedSet = {}
+        closedSet[piece] = None
+
+        # push starting piece into open set
+        # (heauristic + steps, steps, the piece)
+        value = (0, 0, piece)
+        heapq.heappush(openSet, value)
+
+        while openSet:
+            steps, _, the_piece = heapq.heappop(openSet)
+
+            if self.is_exit(the_piece):            
+                # reconstruct the path that got us to the exit
+                return self.reconstruct_path(the_piece, closedSet)
+
+            # find the moves this piece can make
+            my_moves = self.find_moves(the_piece)
+            
+            # for each move
+            for move in my_moves:
+                steps_inc = steps + 1
+                _, dest, move_type = move
+                distance_from_goal = steps_inc
+                # see if it goes anywhere new
+                if dest not in closedSet.keys():
+                    # it does, add it to the heap
+                    closedSet[dest] = (move_type, the_piece, dest)
+                    heapq.heappush(openSet, (steps_inc, distance_from_goal, dest))
+        return ("PASS", None)
+
+
+    def reconstruct_path(self, curr_coord, seen_moves):
+        """
+        Reconstruct a path from a uniform cost seach dictionary `seen_moves`
+        """
+        path = [ ( "EXIT", curr_coord) ]
+        while seen_moves[curr_coord] != None:
+
+            path.append(seen_moves[curr_coord])
+            curr_coord = seen_moves[curr_coord][1]
+        # reverse it, so it goes start to end
+        return path[::-1]
+
+    def update_pieces(self, action):
+        
+        action_type = action[0]
+        action_coords = action[1]
+
+        if action_type == "PASS":
+            pass
+        
+        elif action_type == "EXIT":
+            self.pieces.remove(action_coords)
+        else:
+            src = action_coords[0]
+            dest = action_coords[1]
+
+            self.pieces.remove(src)
+            self.pieces.add(dest)
+
 
     def radial_moves(self, piece, radius):
         """
@@ -70,7 +145,7 @@ class Player:
 
         return [east, west, northeast, northwest, southeast, southwest]
 
-    def regular_moves(piece):
+    def regular_moves(self, piece):
         """
         Find all valid regular moves a piece can make given a board state.
         Arguments:
@@ -78,7 +153,7 @@ class Player:
         * `board` -- a dictionary of { piece : player } representing the board state
             where player is a String color, ie "red"
         """
-        moves       = radial_moves(piece, 1)
+        moves       = self.radial_moves(piece, 1)
         valid_moves = []
 
         # filter out invalid moves
@@ -93,7 +168,7 @@ class Player:
 
         return valid_moves
         
-    def jump_moves(piece):
+    def jump_moves(self, piece):
         """
         Find all valid jump moves a piece can make given a board state.
         Arguments:
@@ -101,8 +176,8 @@ class Player:
         * `board` -- a dictionary of { piece : player } representing the board state
             where player is a String color, ie "red"
         """
-        regular_moves = radial_moves(piece, 1)
-        jump_moves    = radial_moves(piece, 2)
+        regular_moves = self.radial_moves(piece, 1)
+        jump_moves    = self.radial_moves(piece, 2)
 
         valid_moves = []
         # filter out invalid moves
@@ -121,6 +196,28 @@ class Player:
                         valid_moves.append(valid_move)
 
         return valid_moves
+
+
+    def find_moves(self, piece):
+        """
+        All valid moves by a piece given a board state.
+        Arguments:
+        * `piece` -- a 2 tuple of coordinates (x, y)
+        * `board` -- a dictionary of { piece : player } representing the board state
+        * `player` -- player is the String colour, ie. "red"
+        """
+        moves = []
+        # see where we can exit
+        if self.is_exit(piece):
+            exit_move = (piece, piece, "EXIT")
+            moves.append(exit_move)
+
+        # see where we can jump
+        moves += self.jump_moves(piece)
+
+        # see where we can move normally
+        moves += self.regular_moves(piece)
+        return moves
 
     def update(self, colour, action):
         """

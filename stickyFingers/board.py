@@ -4,7 +4,6 @@ class Board:
         self.pieceList = ['red', 'blue', 'green']
         self.board = self.create_pieces()
         self.pure_board = self.get_pure_board()
-        print(self.board)
         
     
     def create_pieces(self):
@@ -26,11 +25,11 @@ class Board:
     def player_starts(self, colour):
 
         if colour == 'red':
-            return ((-3,0), (-3,1), (-3,2), (-3,3))
+            return set([(-3,0), (-3,1), (-3,2), (-3,3)])
         elif colour == 'blue':
-            return ((0,3), (1,2), (2,1), (3, 0))
+            return set([(0,3), (1,2), (2,1), (3, 0)])
         elif colour == 'green':
-            return ((0,-3), (1,-3), (2,-3), (3,-3))
+            return set([(0,-3), (1,-3), (2,-3), (3,-3)])
 
     def update_board(self, colour, action):
         
