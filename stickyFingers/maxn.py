@@ -1,8 +1,5 @@
 import copy
 class MaxN:
-    def __init__(self, player, board_info):
-        self.board_info = board_info
-        self.player = player
        
         
     def is_terminal_board(self):
@@ -33,7 +30,9 @@ class MaxN:
 
         vmax = (float('-inf'), float('-inf'), float('-inf'))
         
-        for piece in self.player.pieces:
+        player_pieces = list(filter(lamda x: if x.value == player_colour, board_info.board))
+
+        for piece in player_pieces:
             # proper formatting 
             all_moves = self.player.find_moves(piece)
 
