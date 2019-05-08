@@ -1,8 +1,8 @@
 
-from stickyFingers.board import *
+from board import *
 import sys
 import heapq
-from stickyFingers.maxn import *
+from maxn import *
 
 class ExamplePlayer:
     def __init__(self, colour):
@@ -58,8 +58,8 @@ class ExamplePlayer:
         return action
         """
 
-        self.maxn_strat.max_n(1, self.board_info.player_id[self.colour])
-
+        (score, action_to_take) = self.maxn_strat.max_n(3, self.board_info.player_id[self.colour])
+        print(action_to_take)
 
     def uniform_cost_search(self, piece):
         """
@@ -291,3 +291,5 @@ class ExamplePlayer:
         for remove_coords in to_remove:
             self.pieces.remove(remove_coords)
 
+player = ExamplePlayer('red')
+player.action()

@@ -33,6 +33,6 @@ class MaxN:
                 (score, _) = self.max_n(depth - 1, player_id + 1)
                 if score[player_id] > vmax[player_id]:
                     vmax = score
-                    best_a = move
+                    best_a = (move[2], (move[0], move[1]))
 
         return (vmax, best_a)
