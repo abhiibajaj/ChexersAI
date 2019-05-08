@@ -2,6 +2,7 @@
 from stickyFingers.board import *
 import sys
 import heapq
+from stickyFingers.maxn import *
 
 class ExamplePlayer:
     def __init__(self, colour):
@@ -16,15 +17,17 @@ class ExamplePlayer:
         strings "red", "green", or "blue" correspondingly.
         """
         # TODO: Set up state representation.
-        self.boardInfo = Board()
+        self.board_info = Board()
 
         self.colour = colour
 
-        self.pieces = self.boardInfo.player_starts(colour)
-        self.exits = self.boardInfo.player_exits(colour)
+        self.pieces = self.board_info.player_starts(colour)
+        self.exits = self.board_info.player_exits(colour)
+
+        self.maxn_strat = MaxN(self, self.board_info)
 
         # self.update(colour, ("MOVE", ((-3, 0), (-2, 0))))
-        # self.boardInfo.print_board(debug=True)        
+        # self.board_info.print_board(debug=True)        
     
 
     def is_exit(self, piece):
@@ -45,14 +48,18 @@ class ExamplePlayer:
         actions, your player must return a pass instead. The action (or pass) 
         must be represented based on the above instructions for representing 
         actions.
-        """
         # TODO: Decide what action to take.
+
         for piece in self.pieces:
             path = self.uniform_cost_search(piece)
             action = path[0]
             break
         self.update_pieces(action)
         return action
+        """
+
+        self.maxn_strat.max_n(1, self.board_info.player_id[self.colour])
+
 
     def uniform_cost_search(self, piece):
         """
@@ -187,9 +194,9 @@ class ExamplePlayer:
         # filter out invalid moves
         for move in moves:
             # if it is not occupied
-            if move not in self.boardInfo.board:
+            if move not in self.board_info.board:
                 # if the move exists
-                if move in self.boardInfo.pure_board:
+                if move in self.board_info.pure_board:
                     # turn the move into a move tuple
                     valid_move = (piece, move, "MOVE")
                     valid_moves.append(valid_move)
@@ -212,13 +219,13 @@ class ExamplePlayer:
         # for surrounding move spaces
         for (index, regular_move) in enumerate(regular_moves, 0):
             # if there is someone to jump over
-            if regular_move in self.boardInfo.board:
+            if regular_move in self.board_info.board:
                 # the position of the jump
                 jump_move = jump_moves[index]
                 # if the jump position is not occupied
-                if jump_move not in self.boardInfo.board:
+                if jump_move not in self.board_info.board:
                     # if the jump is a space on the board
-                    if jump_move in self.boardInfo.pure_board:
+                    if jump_move in self.board_info.pure_board:
                         # turn the move into a move tuple
                         valid_move = (piece, jump_move, "JUMP")
                         valid_moves.append(valid_move)
@@ -267,15 +274,15 @@ class ExamplePlayer:
         """
         # TODO: Update state representation in response to action.
 
-        # print(self.boardInfo.board)
+        # print(self.board_info.board)
 
-        self.boardInfo.update_board(colour, action)
+        self.board_info.update_board(colour, action)
 
         to_remove = set()
         #if action[0] == "JUMP":
         
         for piece in self.pieces:
-            if self.boardInfo.board[piece] != self.colour:
+            if self.board_info.board[piece] != self.colour:
                
 
                 to_remove.add(piece)

@@ -4,6 +4,16 @@ class Board:
         self.pieceList = ['red', 'blue', 'green']
         self.board = self.create_pieces()
         self.pure_board = self.get_pure_board()
+        self.scores = {
+            'red': 0,
+            'green': 0,
+            'blue': 0
+        }
+        self.player_id = {
+            'red': 0,
+            'green': 1,
+            'blue': 2
+        }
 
     def create_pieces(self):
         pieces = {}
@@ -39,6 +49,9 @@ class Board:
             pass
 
         elif action_type == "EXIT":
+            # keep score
+            self.scores[colour] += 1
+            print(self.scores)
             del self.board[action_coords]
 
         else:
@@ -54,7 +67,6 @@ class Board:
                 jumped = self.jumped_coord(colour, action)
                 # if we did, change its colour
                 self.board[jumped] = colour
-                
 
     def jumped_coord(self, colour, action):
         # do maths
