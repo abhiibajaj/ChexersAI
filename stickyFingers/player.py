@@ -58,7 +58,8 @@ class ExamplePlayer:
         return action
         """
 
-        (score, action_to_take) = self.maxn_strat.max_n(5, self.colour, self.board_info)
+        (score, action_to_take) = self.maxn_strat.max_n(5, self.colour, 
+                                                        self.board_info)
         
         self.update_pieces(action_to_take)
 
