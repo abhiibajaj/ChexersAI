@@ -91,7 +91,7 @@ def play(players, options, out):
 
         # Next player's turn!
         curr_player,next_player,prev_player=next_player,prev_player,curr_player
-    
+        
     # After that loop, the game has ended (one way or another!)
     # Display the final result of the game to the user.
     result = game.end()

@@ -58,9 +58,10 @@ class ExamplePlayer:
         return action
         """
 
-        (score, action_to_take) = self.maxn_strat.max_n(5, self.colour, 
+        (score, action_to_take) = self.maxn_strat.max_n(1, self.colour, 
                                                         self.board_info)
-        
+        if action_to_take[0] == "EXIT":
+            action_to_take = ("EXIT", (action_to_take[1][0]))
         self.update_pieces(action_to_take)
 
         return action_to_take
@@ -295,5 +296,14 @@ class ExamplePlayer:
         for remove_coords in to_remove:
             self.pieces.remove(remove_coords)
 
-player = ExamplePlayer('red')
-player.action()
+player0 = ExamplePlayer('red')
+player1 = ExamplePlayer('green')
+player2 = ExamplePlayer('blue')
+action  = player0.action()
+player0.update(player0.colour, action)
+player1.update(player0.colour, action)
+player2.update(player0.colour, action)
+player0.board_info.print_board()
+# player1.action()
+# player2.action()
+
