@@ -1,4 +1,4 @@
-from stickyFingers.utility_methods import *
+from stickyFingersUniformCost.utility_methods import *
 import heapq
 
 class UniformCostSearch:
@@ -14,6 +14,7 @@ class UniformCostSearch:
     def get_shortest_path(self, pieces, player_colour, board, pure_board):
         all_paths = self.all_piece_paths(pieces, player_colour, board, 
                                          pure_board)
+        
         
         best_path = self.shortest_path(all_paths)
 
@@ -46,7 +47,7 @@ class UniformCostSearch:
         return paths
     
 
-    def score_path(self, path, player_colour=None,board=None):
+    def score_path(self, path):
         """
         Evaluates a given path with a heuristic that prefers jumps.
 
@@ -70,12 +71,7 @@ class UniformCostSearch:
                 print(path)
             # favour jumps in the near future
             if action_type == "JUMP":
-                if board and player_colour:
-                    jumped = jumped_coord(move)
-                    if board[jumped] != player_colour:
-                        score+=10
-                    else:
-                        score += 1
+                score += 1
                               
             index+=1
 
@@ -106,7 +102,6 @@ class UniformCostSearch:
         * `board` -- a dictionary of { piece : player } representing the board state
         * `player` -- player is the String colour, ie. "red"
         """
-        # print("IN UNIFORM COST FOR ", player_colour)
         openSet = []
         heapq.heapify(openSet)
 
@@ -130,7 +125,7 @@ class UniformCostSearch:
             my_moves = find_moves(the_piece, player_colour, board, 
                                     pure_board)
             
-            # print(my_moves)
+            
             # for each move
             for move in my_moves:
                 steps_inc = steps + 1
