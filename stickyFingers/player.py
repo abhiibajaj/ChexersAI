@@ -5,16 +5,17 @@ import heapq
 from stickyFingers.maxn import *
 from stickyFingers.utility_methods import *
 
+
 class ExamplePlayer:
     def __init__(self, colour):
         """
         This method is called once at the beginning of the game to initialise
         your player. You should use this opportunity to set up your own internal
-        representation of the game state, and any other information about the 
+        representation of the game state, and any other information about the
         game state you would like to maintain for the duration of the game.
 
-        The parameter colour will be a string representing the player your 
-        program will play as (Red, Green or Blue). The value will be one of the 
+        The parameter colour will be a string representing the player your
+        program will play as (Red, Green or Blue). The value will be one of the
         strings "red", "green", or "blue" correspondingly.
         """
         # TODO: Set up state representation.
@@ -32,13 +33,13 @@ class ExamplePlayer:
         
     def action(self):
         """
-        This method is called at the beginning of each of your turns to request 
+        This method is called at the beginning of each of your turns to request
         a choice of action from your program.
 
-        Based on the current state of the game, your player should select and 
-        return an allowed action to play on this turn. If there are no allowed 
-        actions, your player must return a pass instead. The action (or pass) 
-        must be represented based on the above instructions for representing 
+        Based on the current state of the game, your player should select and
+        return an allowed action to play on this turn. If there are no allowed
+        actions, your player must return a pass instead. The action (or pass)
+        must be represented based on the above instructions for representing
         actions.
         # TODO: Decide what action to take.
         """
@@ -54,7 +55,7 @@ class ExamplePlayer:
                                                         self.board_info, self.colour)
         # if action_to_take[0] == "EXIT":
         #     action_to_take = ("EXIT", (action_to_take[1][0]))
-        # print("FINAL SCORE FOR RED: ", score)
+        # print("FINL SCORE FOR RED: ", score)
         self.update_pieces(action_to_take)
 
         return action_to_take
@@ -107,12 +108,11 @@ class ExamplePlayer:
                     heapq.heappush(openSet, (steps_inc, distance_from_goal, dest))
         return ("PASS", None)
 
-
     def reconstruct_path(self, curr_coord, seen_moves):
         """
         Reconstruct a path from a uniform cost seach dictionary `seen_moves`
         """
-        path = [ ( "EXIT", curr_coord) ]
+        path = [("EXIT", curr_coord)]
         while seen_moves[curr_coord] != None:
 
             path.append(seen_moves[curr_coord])
@@ -127,7 +127,7 @@ class ExamplePlayer:
 
         if action_type == "PASS":
             pass
-        
+
         elif action_type == "EXIT":
             self.pieces.remove(action_coords)
         else:
@@ -169,7 +169,7 @@ class ExamplePlayer:
         self.board_info.update_board(colour, action)
 
         to_remove = set()
-        #if action[0] == "JUMP":
+        # if action[0] == "JUMP":
         
         for piece in self.pieces:
             if self.board_info.board[piece] != self.colour:
