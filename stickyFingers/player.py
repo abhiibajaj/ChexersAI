@@ -48,14 +48,14 @@ class ExamplePlayer:
 
         
 
-        # (score, action_to_take) = self.maxn_strat.max_n(3, self.colour, 
-        #                                                 self.board_info,
-        #                                                 self.colour)
+        (score, action_to_take) = self.maxn_strat.max_n(3, self.colour, 
+                                                        self.board_info,
+                                                        self.colour)
 
-        action_to_take = self.uniform_cost_strat.uniform_action(
-            self.pieces, self.colour, self.board_info.board,
-            self.board_info.pure_board
-        )
+        # action_to_take = self.uniform_cost_strat.uniform_action(
+        #     self.pieces, self.colour, self.board_info.board,
+        #     self.board_info.pure_board
+        # )
         # if action_to_take[0] == "EXIT":
         #     action_to_take = ("EXIT", (action_to_take[1][0]))
         # print("FINL SCORE FOR RED: ", score)
@@ -128,14 +128,12 @@ class ExamplePlayer:
             self.pieces.remove(remove_coords)
 
 player0 = ExamplePlayer('red')
-# player0.action()
-# print(player0.find_moves((3,0)))
 player1 = ExamplePlayer('green')
 player2 = ExamplePlayer('blue')
 action  = player0.action()
-player0.update(player0.colour, action)
-player1.update(player0.colour, action)
-player2.update(player0.colour, action)
+# player0.update(player0.colour, action)
+# player1.update(player0.colour, action)
+# player2.update(player0.colour, action)
 # player0.board_info.print_board()
 # player1.action()
 # player2.action()

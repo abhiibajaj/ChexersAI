@@ -1,11 +1,13 @@
 import copy
 from math import sqrt
 from stickyFingers.utility_methods import *
+from stickyFingers.uniform_cost import *
 
 class MaxN:
        
     def __init__(self, board_info):
         self.board_info = board_info
+        self.uniform_cost_strat = UniformCostSearch()
         
     def is_terminal_board(self):
         # check that a player is 1 move away from winning
@@ -16,7 +18,7 @@ class MaxN:
 
         return terminal
 
-    def heuristic(self, player_colour, board_info):
+    def heuristic_square_dist(self, player_colour, board_info):
         score = [0, 0, 0]
         player_id = self.get_player_id(player_colour)
         score[player_id] += board_info.scores[player_colour]
@@ -36,6 +38,37 @@ class MaxN:
             # min dist between all pieces?
             score[player_id] -= min_dist
         # board_info.print_board(debug=True)
+        # print("PLayer colour for score ", player_colour)
+
+        # print("SCORE: ", score)
+
+        # print()
+        # print()
+ 
+
+        return score
+
+    def heuristic_score_path(self, player_colour, board_info):
+        score = [0, 0, 0]
+        player_id = self.get_player_id(player_colour)
+
+        score[player_id] += board_info.scores[player_colour]
+
+        # player_pieces = self.get_player_pieces(player_colour, board_info)        
+        for piece, piece_colour in board_info.board.items():
+            exits = player_exits(piece_colour)
+            player_id = self.get_player_id(piece_colour)
+
+            
+            path = self.uniform_cost_strat.uniform_cost_search(
+                piece, piece_colour, board_info.board, board_info.pure_board
+            )
+
+                # print(min_dist)
+                # calc t,
+            # min dist between all pieces?
+            score[player_id] += self.uniform_cost_strat.score_path(path)
+        # board_info.print_board(debug=True)
         print("PLayer colour for score ", player_colour)
 
         print("SCORE: ", score)
@@ -45,6 +78,38 @@ class MaxN:
  
 
         return score
+
+    def heuristic_shortest_path(self, player_colour, board_info):
+        score = [0, 0, 0]
+        player_id = self.get_player_id(player_colour)
+
+        score[player_id] += board_info.scores[player_colour]
+
+        # player_pieces = self.get_player_pieces(player_colour, board_info)        
+        for piece, piece_colour in board_info.board.items():
+            exits = player_exits(piece_colour)
+            player_id = self.get_player_id(piece_colour)
+
+            
+            path = self.uniform_cost_strat.uniform_cost_search(
+                piece, piece_colour, board_info.board, board_info.pure_board
+            )
+
+                # print(min_dist)
+                # calc t,
+            # min dist between all pieces?
+            score[player_id] -= len(path)
+        # board_info.print_board(debug=True)
+        # print("PLayer colour for score ", player_colour)
+
+        # print("SCORE: ", score)
+
+        # print()
+        # print()
+ 
+
+        return score
+        
 
     def calc_square_dist(self, a, b):
         return abs(a[0] - b[0]) + abs(a[1] - b[1])
@@ -56,7 +121,8 @@ class MaxN:
         best_a = ("PASS", None)
 
         if depth == 0 or self.is_terminal_board():
-            evaluation = (self.heuristic(prev_colour, board_info), best_a)
+            evaluation = (self.heuristic_score_path(prev_colour, board_info), 
+                            best_a)
             return evaluation
 
 
@@ -84,6 +150,7 @@ class MaxN:
                     vmax = score
                     best_a = move
             break
+            
             
         
         print(str(player_colour) + " picked " + str(best_a) + " score was : " + str(vmax))

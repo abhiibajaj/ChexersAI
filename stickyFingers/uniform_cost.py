@@ -6,14 +6,18 @@ class UniformCostSearch:
     def uniform_action(self, pieces, player_colour, board, pure_board):
 
         
+        
+        best_path = self.get_shortest_path(pieces, player_colour, board, pure_board)
+        action = best_path[0]
+        return action
+    
+    def get_shortest_path(self, pieces, player_colour, board, pure_board):
         all_paths = self.all_piece_paths(pieces, player_colour, board, 
                                          pure_board)
         
         best_path = self.shortest_path(all_paths)
-        
-        action = best_path[0]
-        return action
 
+        return best_path
     def shortest_path(self, paths):
 
         shortest_path = None
@@ -40,6 +44,53 @@ class UniformCostSearch:
             paths[piece] = path
 
         return paths
+    
+
+    def score_path(self, path):
+        """
+        Evaluates a given path with a heuristic that prefers jumps.
+
+        Arguments:
+        * `path` -- a list of a 3 tuple (piece_location, piece_destination, move_type)
+        this path should contain the moves a piece should take to exit the board.
+        """
+        score = 0  
+        if path == ("PASS", None):
+            return float("-inf")
+
+        # definitely exit if piece is in an exit
+        if len(path) == 1:
+            return float("inf")
+
+        index = 0
+        for move in path:
+            try:
+                action_type, _ = move
+            except:
+                print(path)
+            # favour jumps in the near future
+            if action_type == "JUMP":
+                score += 1
+                              
+            index+=1
+
+        return score
+
+    def score_paths(self, paths):
+        best_path = None
+        best_score = float("inf")
+        for path in paths.values():
+            # skip empty paths
+            if path == None:
+                continue
+            # score this path
+            my_score = score_path(path)
+            # keep the best
+            if (best_path == None) or my_score < best_score:
+                best_score = my_score
+                best_path = path
+
+        return best_path
 
     def uniform_cost_search(self, piece, player_colour, board, pure_board):
         """
