@@ -4,8 +4,7 @@ from stickyFingers.utility_methods import *
 
 class MaxN:
        
-    def __init__(self, player, board_info):
-        self.player = player
+    def __init__(self, board_info):
         self.board_info = board_info
         
     def is_terminal_board(self):

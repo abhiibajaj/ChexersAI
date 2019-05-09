@@ -3,6 +3,7 @@ from stickyFingers.board import *
 import sys
 import heapq
 from stickyFingers.maxn import *
+from stickyFingers.uniform_cost import *
 from stickyFingers.utility_methods import *
 
 
@@ -26,7 +27,8 @@ class ExamplePlayer:
         self.pieces = self.board_info.player_starts(colour)
         # self.exits = self.board_info.player_exits(colour)
         
-        self.maxn_strat = MaxN(self, self.board_info)
+        self.maxn_strat = MaxN(self.board_info)
+        self.uniform_cost_strat = UniformCostSearch()
 
         # self.update(colour, ("MOVE", ((-3, 0), (-2, 0))))
         # self.board_info.print_board(debug=True)            
@@ -44,15 +46,16 @@ class ExamplePlayer:
         # TODO: Decide what action to take.
         """
 
-        # for piece in self.pieces:
-        #     path = self.uniform_cost_search(piece)
-        #     action = path[0]
-        #     break
-        # self.update_pieces(action)
-        # return action
+        
 
-        (score, action_to_take) = self.maxn_strat.max_n(3, self.colour, 
-                                                        self.board_info, self.colour)
+        # (score, action_to_take) = self.maxn_strat.max_n(3, self.colour, 
+        #                                                 self.board_info,
+        #                                                 self.colour)
+
+        action_to_take = self.uniform_cost_strat.uniform_action(
+            self.pieces, self.colour, self.board_info.board,
+            self.board_info.pure_board
+        )
         # if action_to_take[0] == "EXIT":
         #     action_to_take = ("EXIT", (action_to_take[1][0]))
         # print("FINL SCORE FOR RED: ", score)
@@ -60,65 +63,8 @@ class ExamplePlayer:
 
         return action_to_take
 
-    def uniform_cost_search(self, piece):
-        """
-        A uniform cost search algorithm for finding an exit for a given piece
 
-        Arguments:
-        * `piece` -- a 2 tuple of coordinates (x, y)
-        * `board` -- a dictionary of { piece : player } representing the board state
-        * `player` -- player is the String colour, ie. "red"
-        """
-        openSet = []
-        heapq.heapify(openSet)
-
-        closedSet = {}
-        closedSet[piece] = None
-
-        # push starting piece into open set
-        # (heauristic + steps, steps, the piece)
-        value = (0, 0, piece)
-        heapq.heappush(openSet, value)
-
-        while openSet:
-            steps, _, the_piece = heapq.heappop(openSet)
-
-            if is_exit(the_piece, self.colour):            
-                # reconstruct the path that got us to the exit
-                return self.reconstruct_path(the_piece, closedSet)
-
-            # find the moves this piece can make
-            my_moves = find_moves(the_piece, self.colour, self.board_info.board, 
-                                    self.board_info.pure_board)
-            
-            # for each move
-            for move in my_moves:
-                steps_inc = steps + 1
-                # _, dest, move_type = move
-                (move_type, action_coords) = move
-                if move_type == "EXIT":
-                    dest = action_coords
-                else:
-                    dest = action_coords[1]
-                distance_from_goal = steps_inc
-                # see if it goes anywhere new
-                if dest not in closedSet.keys():
-                    # it does, add it to the heap
-                    closedSet[dest] = (move_type, action_coords)
-                    heapq.heappush(openSet, (steps_inc, distance_from_goal, dest))
-        return ("PASS", None)
-
-    def reconstruct_path(self, curr_coord, seen_moves):
-        """
-        Reconstruct a path from a uniform cost seach dictionary `seen_moves`
-        """
-        path = [("EXIT", curr_coord)]
-        while seen_moves[curr_coord] != None:
-
-            path.append(seen_moves[curr_coord])
-            curr_coord = seen_moves[curr_coord][1][0]
-        # reverse it, so it goes start to end
-        return path[::-1]
+   
 
     def update_pieces(self, action):
         
