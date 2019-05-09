@@ -58,7 +58,7 @@ class ExamplePlayer:
         return action
         """
 
-        (score, action_to_take) = self.maxn_strat.max_n(1, self.colour, 
+        (score, action_to_take) = self.maxn_strat.max_n(2, self.colour, 
                                                         self.board_info)
         if action_to_take[0] == "EXIT":
             action_to_take = ("EXIT", (action_to_take[1][0]))
