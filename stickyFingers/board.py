@@ -12,6 +12,7 @@ class Board:
         }
 
 
+    
     def create_pieces(self):
         pieces = {}
         for piece in self.pieceList:

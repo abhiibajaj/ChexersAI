@@ -51,7 +51,7 @@ class ExamplePlayer:
         (score, action_to_take) = self.maxn_strat.max_n(3, self.colour, 
                                                         self.board_info,
                                                         self.colour)
-
+        print((score, action_to_take))
         # action_to_take = self.uniform_cost_strat.uniform_action(
         #     self.pieces, self.colour, self.board_info.board,
         #     self.board_info.pure_board

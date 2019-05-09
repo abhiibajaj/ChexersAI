@@ -52,7 +52,7 @@ class MaxN:
         score = [0, 0, 0]
         player_id = self.get_player_id(player_colour)
 
-        score[player_id] += board_info.scores[player_colour]
+        score[player_id] += 5*board_info.scores[player_colour]
 
         # player_pieces = self.get_player_pieces(player_colour, board_info)        
         for piece, piece_colour in board_info.board.items():
@@ -67,14 +67,16 @@ class MaxN:
                 # print(min_dist)
                 # calc t,
             # min dist between all pieces?
-            score[player_id] += self.uniform_cost_strat.score_path(path)
+            score[player_id] += self.uniform_cost_strat.score_path(
+                path, piece_colour, board_info.board
+            )
         # board_info.print_board(debug=True)
-        print("PLayer colour for score ", player_colour)
+        # print("PLayer colour for score ", player_colour)
 
-        print("SCORE: ", score)
+        # print("SCORE: ", score)
 
-        print()
-        print()
+        # print()
+        # print()
  
 
         return score
@@ -129,7 +131,7 @@ class MaxN:
         vmax = (float('-inf'), float('-inf'), float('-inf'))
         player_pieces = self.get_player_pieces(player_colour, board_info)
 
-        print("Current move: " + str(curr) + " for " + str(player_colour))
+        # print("Current move: " + str(curr) + " for " + str(player_colour))
         for piece in player_pieces:
             # proper formatting 
             all_moves = find_moves(piece, player_colour, board_info.board, 
@@ -147,13 +149,18 @@ class MaxN:
                                         board_info_copy, player_colour, curr+1)
                 player_id = self.get_player_id(player_colour)
                 if score[player_id] > vmax[player_id]:
+                    
                     vmax = score
                     best_a = move
+                    # Immediate pruning
+                    if vmax == float("inf"):
+                        break
             break
             
             
+            
         
-        print(str(player_colour) + " picked " + str(best_a) + " score was : " + str(vmax))
+        # print(str(player_colour) + " picked " + str(best_a) + " score was : " + str(vmax))
         # board_info.print_board(debug=True)
         
         return (vmax, best_a)
