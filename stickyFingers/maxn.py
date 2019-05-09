@@ -1,5 +1,6 @@
 import copy
 from math import sqrt
+from stickyFingers.utility_methods import *
 
 class MaxN:
        
@@ -26,56 +27,68 @@ class MaxN:
         
         min_dist = float('inf')
         for piece, piece_colour in board_info.board.items():
-            player_exits = board_info.player_exits(piece_colour)
+            exits = player_exits(piece_colour)
             player_id = self.get_player_id(piece_colour)
 
-            for player_exit in player_exits:
+            for player_exit in exits:
                 min_dist = min(min_dist, self.calc_square_dist(piece, player_exit))
                 # print(min_dist)
                 # calc t,
             # min dist between all pieces?
             score[player_id] -= min_dist
+        # board_info.print_board(debug=True)
+        print("PLayer colour for score ", player_colour)
+
         print("SCORE: ", score)
+
+        print()
+        print()
+ 
 
         return score
 
     def calc_square_dist(self, a, b):
         return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
-    def max_n(self, depth, player_colour, board_info):
+    def max_n(self, depth, player_colour, board_info, prev_colour,curr=0):
 
 
         # Default action
         best_a = ("PASS", None)
 
         if depth == 0 or self.is_terminal_board():
-            return (self.heuristic(player_colour, board_info), best_a)
+            evaluation = (self.heuristic(prev_colour, board_info), best_a)
+            return evaluation
 
 
         vmax = (float('-inf'), float('-inf'), float('-inf'))
         player_pieces = self.get_player_pieces(player_colour, board_info)
 
+        print("Current move: " + str(curr) + " for " + str(player_colour))
         for piece in player_pieces:
             # proper formatting 
-            all_moves = self.player.find_moves(piece)
-
+            all_moves = find_moves(piece, player_colour, board_info.board, 
+                                    board_info.pure_board)
             for move in all_moves:
                 board_info_copy = copy.deepcopy(board_info)
                 
 
-                proper_move = (move[2], (move[0], move[1]))
-                if move[2] == "EXIT":
-                    proper_move = (move[2], (move[0]))
-                board_info_copy.update_board(player_colour, proper_move)
+                
+                board_info_copy.update_board(player_colour, move)
+                # board_info_copy.print_board()
 
                 (score, _) = self.max_n(depth - 1, 
                                         self.get_next_colour(player_colour),
-                                        board_info_copy)
+                                        board_info_copy, player_colour, curr+1)
                 player_id = self.get_player_id(player_colour)
                 if score[player_id] > vmax[player_id]:
                     vmax = score
-                    best_a = (move[2], (move[0], move[1]))
+                    best_a = move
             break
+            
+        
+        print(str(player_colour) + " picked " + str(best_a) + " score was : " + str(vmax))
+        # board_info.print_board(debug=True)
         
         return (vmax, best_a)
 
@@ -102,5 +115,5 @@ class MaxN:
             return 'green'
         elif player_colour == 'green':
             return 'blue'
-        else:
+        elif player_colour == 'blue':
             return 'red'

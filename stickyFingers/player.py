@@ -3,6 +3,7 @@ from stickyFingers.board import *
 import sys
 import heapq
 from stickyFingers.maxn import *
+from stickyFingers.utility_methods import *
 
 class ExamplePlayer:
     def __init__(self, colour):
@@ -22,21 +23,12 @@ class ExamplePlayer:
         self.colour = colour
 
         self.pieces = self.board_info.player_starts(colour)
-        self.exits = self.board_info.player_exits(colour)
-
+        # self.exits = self.board_info.player_exits(colour)
+        
         self.maxn_strat = MaxN(self, self.board_info)
 
         # self.update(colour, ("MOVE", ((-3, 0), (-2, 0))))
-        # self.board_info.print_board(debug=True)        
-    
-
-    def is_exit(self, piece):
-        """
-        Given a chex coordinate, return if a given player can exit
-        Arguments:
-        * `piece` -- a 2 tuple of coordinates (x, y)
-        """
-        return piece in self.exits
+        # self.board_info.print_board(debug=True)            
         
     def action(self):
         """
@@ -49,19 +41,20 @@ class ExamplePlayer:
         must be represented based on the above instructions for representing 
         actions.
         # TODO: Decide what action to take.
-
-        for piece in self.pieces:
-            path = self.uniform_cost_search(piece)
-            action = path[0]
-            break
-        self.update_pieces(action)
-        return action
         """
 
-        (score, action_to_take) = self.maxn_strat.max_n(2, self.colour, 
-                                                        self.board_info)
-        if action_to_take[0] == "EXIT":
-            action_to_take = ("EXIT", (action_to_take[1][0]))
+        # for piece in self.pieces:
+        #     path = self.uniform_cost_search(piece)
+        #     action = path[0]
+        #     break
+        # self.update_pieces(action)
+        # return action
+
+        (score, action_to_take) = self.maxn_strat.max_n(3, self.colour, 
+                                                        self.board_info, self.colour)
+        # if action_to_take[0] == "EXIT":
+        #     action_to_take = ("EXIT", (action_to_take[1][0]))
+        # print("FINAL SCORE FOR RED: ", score)
         self.update_pieces(action_to_take)
 
         return action_to_take
@@ -89,22 +82,28 @@ class ExamplePlayer:
         while openSet:
             steps, _, the_piece = heapq.heappop(openSet)
 
-            if self.is_exit(the_piece):            
+            if is_exit(the_piece, self.colour):            
                 # reconstruct the path that got us to the exit
                 return self.reconstruct_path(the_piece, closedSet)
 
             # find the moves this piece can make
-            my_moves = self.find_moves(the_piece)
+            my_moves = find_moves(the_piece, self.colour, self.board_info.board, 
+                                    self.board_info.pure_board)
             
             # for each move
             for move in my_moves:
                 steps_inc = steps + 1
-                _, dest, move_type = move
+                # _, dest, move_type = move
+                (move_type, action_coords) = move
+                if move_type == "EXIT":
+                    dest = action_coords
+                else:
+                    dest = action_coords[1]
                 distance_from_goal = steps_inc
                 # see if it goes anywhere new
                 if dest not in closedSet.keys():
                     # it does, add it to the heap
-                    closedSet[dest] = (move_type, (the_piece, dest))
+                    closedSet[dest] = (move_type, action_coords)
                     heapq.heappush(openSet, (steps_inc, distance_from_goal, dest))
         return ("PASS", None)
 
@@ -139,125 +138,11 @@ class ExamplePlayer:
             self.pieces.add(dest)
                         # see if we jumped over another colour
             if action_type == "JUMP":
-                jumped = self.jumped_coord(action)
+                jumped = jumped_coord(action)
                 # if we did, change its colour
                 self.pieces.add(jumped)
                 
-    def jumped_coord(self, action):
-        # do maths
-        # get player coord we jumped over
-        src = action[1][0]
-        dst = action[1][1]
 
-        xdir = dst[0] - src[0]
-        ydir = dst[1] - src[1]
-
-        jumpedx = src[0] + self.piece_sign(xdir)
-        jumpedy = src[1] + self.piece_sign(ydir)
-
-        return (jumpedx, jumpedy)
-
-    def piece_sign(self, pdir):
-        if pdir == 0:
-            return 0
-        elif pdir > 0:
-            return 1
-        else:
-            return -1
-
-
-    def radial_moves(self, piece, radius):
-        """
-        Helper function to find all radial moves outward from a center coordinate.
-        Arguments:
-        * `piece` -- a 2 tuple of coordinates (x, y), taken as the center.
-        * `radius` -- the range of the radius outwards,
-            ie. radius 1 = a regular move
-                radius 2 = a jump move
-        """
-        
-        east      = (piece[0] + radius, piece[1])
-        west      = (piece[0] - radius, piece[1])
-        northwest = (piece[0]         , piece[1] - radius)
-        northeast = (piece[0] + radius, piece[1] - radius)
-        southwest = (piece[0] - radius, piece[1] + radius)
-        southeast = (piece[0]         , piece[1] + radius)
-
-        return [east, west, northeast, northwest, southeast, southwest]
-
-    def regular_moves(self, piece):
-        """
-        Find all valid regular moves a piece can make given a board state.
-        Arguments:
-        * `piece` -- a 2 tuple of coordinates (x, y)
-        * `board` -- a dictionary of { piece : player } representing the board state
-            where player is a String color, ie "red"
-        """
-        moves       = self.radial_moves(piece, 1)
-        valid_moves = []
-
-        # filter out invalid moves
-        for move in moves:
-            # if it is not occupied
-            if move not in self.board_info.board:
-                # if the move exists
-                if move in self.board_info.pure_board:
-                    # turn the move into a move tuple
-                    valid_move = (piece, move, "MOVE")
-                    valid_moves.append(valid_move)
-
-        return valid_moves
-        
-    def jump_moves(self, piece):
-        """
-        Find all valid jump moves a piece can make given a board state.
-        Arguments:
-        * `piece` -- a 2 tuple of coordinates (x, y)
-        * `board` -- a dictionary of { piece : player } representing the board state
-            where player is a String color, ie "red"
-        """
-        regular_moves = self.radial_moves(piece, 1)
-        jump_moves    = self.radial_moves(piece, 2)
-
-        valid_moves = []
-        # filter out invalid moves
-        # for surrounding move spaces
-        for (index, regular_move) in enumerate(regular_moves, 0):
-            # if there is someone to jump over
-            if regular_move in self.board_info.board:
-                # the position of the jump
-                jump_move = jump_moves[index]
-                # if the jump position is not occupied
-                if jump_move not in self.board_info.board:
-                    # if the jump is a space on the board
-                    if jump_move in self.board_info.pure_board:
-                        # turn the move into a move tuple
-                        valid_move = (piece, jump_move, "JUMP")
-                        valid_moves.append(valid_move)
-
-        return valid_moves
-
-
-    def find_moves(self, piece):
-        """
-        All valid moves by a piece given a board state.
-        Arguments:
-        * `piece` -- a 2 tuple of coordinates (x, y)
-        * `board` -- a dictionary of { piece : player } representing the board state
-        * `player` -- player is the String colour, ie. "red"
-        """
-        moves = []
-        # see where we can exit
-        if self.is_exit(piece):
-            exit_move = (piece, piece, "EXIT")
-            moves.append(exit_move)
-
-        # see where we can jump
-        moves += self.jump_moves(piece)
-
-        # see where we can move normally
-        moves += self.regular_moves(piece)
-        return moves
 
     def update(self, colour, action):
         """
@@ -297,13 +182,15 @@ class ExamplePlayer:
             self.pieces.remove(remove_coords)
 
 player0 = ExamplePlayer('red')
+# player0.action()
+# print(player0.find_moves((3,0)))
 player1 = ExamplePlayer('green')
 player2 = ExamplePlayer('blue')
 action  = player0.action()
 player0.update(player0.colour, action)
 player1.update(player0.colour, action)
 player2.update(player0.colour, action)
-player0.board_info.print_board()
+# player0.board_info.print_board()
 # player1.action()
 # player2.action()
 

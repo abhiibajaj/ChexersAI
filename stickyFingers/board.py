@@ -1,3 +1,4 @@
+from stickyFingers.utility_methods import *
 class Board:
 
     def __init__(self):
@@ -59,48 +60,10 @@ class Board:
 
             # see if we jumped over another colour
             if action_type == "JUMP":
-                jumped = self.jumped_coord(colour, action)
+                jumped = jumped_coord(action)
                 # if we did, change its colour
                 self.board[jumped] = colour
-
-    def jumped_coord(self, colour, action):
-        # do maths
-        # get player coord we jumped over
-        src = action[1][0]
-        dst = action[1][1]
-
-        xdir = dst[0] - src[0]
-        ydir = dst[1] - src[1]
-
-        jumpedx = src[0] + self.piece_sign(xdir)
-        jumpedy = src[1] + self.piece_sign(ydir)
-
-        return (jumpedx, jumpedy)
-
-    def piece_sign(self, pdir):
-        if pdir == 0:
-            return 0
-        elif pdir > 0:
-            return 1
-        else:
-            return -1
-
-    # all exits for each color
-
-    def player_exits(self, colour):
-        """
-        Return the exits for a given piece colour
-        Arguments:
-        * `piece_colour` -- a String, ie. "red"
-        """
-        if colour == "red":
-            return [(3, -3), (3, -2), (3, -1), (3, 0)]
-        elif colour == "green":
-            return [(-3, 3), (-2, 3), (-1, 3), (0, 3)]
-        elif colour == "blue":
-            return [(-3, 0), (-2, -1), (-1, -2), (0, -3)]
-        else:
-            return []
+    
 
     def print_board(self, message="", debug=False, **kwargs):
         # Set up the board template:
