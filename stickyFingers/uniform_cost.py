@@ -35,6 +35,10 @@ class UniformCostSearch:
         """
         Helper function to apply uniform_cost_search to a list of pieces.
         """
+        # if pieces are not there:
+        # return ((PASS, "NONE"))
+        if len(pieces) == 0:
+            return ("PASS", None)
         paths = {}
         # for each piece
         for piece in pieces:
