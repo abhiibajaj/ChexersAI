@@ -145,7 +145,7 @@ class MaxN:
                 # board_info_copy.print_board()
 
                 (score, _) = self.max_n(depth - 1, 
-                                        self.get_next_colour(player_colour),
+                                        self.get_next_colour(player_colour, board_info_copy),
                                         board_info_copy, player_colour, curr+1)
                 player_id = self.get_player_id(player_colour)
                 if score[player_id] > vmax[player_id]:
@@ -160,7 +160,7 @@ class MaxN:
             
             
         
-        # print(str(player_colour) + " picked " + str(best_a) + " score was : " + str(vmax))
+        print(str(player_colour) + " picked " + str(best_a) + " score was : " + str(vmax))
         # board_info.print_board(debug=True)
         
         return (vmax, best_a)
@@ -182,11 +182,19 @@ class MaxN:
         else:
             return 2
 
-    def get_next_colour(self, player_colour):
+    def get_next_colour(self, player_colour, board_info):
 
         if player_colour == 'red':
-            return 'green'
+            colour =  'green'
         elif player_colour == 'green':
-            return 'blue'
+            colour =  'blue'
         elif player_colour == 'blue':
-            return 'red'
+            colour = 'red'
+
+        avail_colours = [value for value in board_info.board.values()]
+
+        if colour not in avail_colours:
+            return self.get_next_colour(colour, board_info)
+        return colour
+        
+        

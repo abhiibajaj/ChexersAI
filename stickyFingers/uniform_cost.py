@@ -146,6 +146,7 @@ class UniformCostSearch:
                     # it does, add it to the heap
                     closedSet[dest] = (move_type, action_coords)
                     heapq.heappush(openSet, (steps_inc, distance_from_goal, dest))
+        print("DIDN't find a path")
         return ("PASS", None)
 
 
