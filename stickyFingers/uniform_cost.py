@@ -20,6 +20,8 @@ class UniformCostSearch:
         return best_path
     def shortest_path(self, paths):
 
+        if len(paths) == 0:
+            return [("PASS", None)]
         shortest_path = None
         shortest_len  = float("inf")
 
@@ -37,8 +39,7 @@ class UniformCostSearch:
         """
         # if pieces are not there:
         # return ((PASS, "NONE"))
-        if len(pieces) == 0:
-            return ("PASS", None)
+        
         paths = {}
         # for each piece
         for piece in pieces:

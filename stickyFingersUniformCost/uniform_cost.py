@@ -21,6 +21,8 @@ class UniformCostSearch:
         return best_path
     def shortest_path(self, paths):
 
+        if len(paths) == 0:
+            return [("PASS", None)]
         shortest_path = None
         shortest_len  = float("inf")
 
