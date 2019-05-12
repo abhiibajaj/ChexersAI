@@ -50,13 +50,7 @@ class Player:
                                                         self.board_info,
                                                         self.colour)
         print((score, action_to_take))
-        # action_to_take = self.uniform_cost_strat.uniform_action(
-        #     self.pieces, self.colour, self.board_info.board,
-        #     self.board_info.pure_board
-        # )
-        # if action_to_take[0] == "EXIT":
-        #     action_to_take = ("EXIT", (action_to_take[1][0]))
-        # print("FINL SCORE FOR RED: ", score)
+
         self.update_pieces(action_to_take)
 
         return action_to_take

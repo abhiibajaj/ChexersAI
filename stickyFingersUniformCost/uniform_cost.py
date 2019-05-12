@@ -8,6 +8,11 @@ class UniformCostSearch:
 
         best_path = self.get_shortest_path(
             pieces, player_colour, board, pure_board)
+
+        # no path to exit, do nothing
+        if len(best_path) == 0:
+            return ("PASS", None)
+
         action = best_path[0]
         return action
 
@@ -21,7 +26,7 @@ class UniformCostSearch:
 
     def shortest_path(self, paths):
 
-        shortest_path = None
+        shortest_path = []
         shortest_len = float("inf")
 
         for path in paths.values():

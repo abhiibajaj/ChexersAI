@@ -42,9 +42,9 @@ _COL_NAME  = {
 if sys.stdout.isatty():
     # Yay! We can use colour
     _DISPLAY = { # something 5 characters wide for each colour:
-        'r': " \033[1m(\033[91mR\033[0m\033[1m)\033[0m ",
-        'g': " \033[1m(\033[92mG\033[0m\033[1m)\033[0m ",
-        'b': " \033[1m(\033[94mB\033[0m\033[1m)\033[0m ",
+        'r': "  R  ",
+        'g': "  X  ",
+        'b': "  O  ",
         ' ': "     "
     }
 else:

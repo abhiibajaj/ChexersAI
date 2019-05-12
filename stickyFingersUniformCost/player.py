@@ -50,7 +50,7 @@ class Player:
         )
 
         self.update_pieces(action_to_take)
-
+        print("action to take", action_to_take)
         return action_to_take
 
     def update_pieces(self, action):
