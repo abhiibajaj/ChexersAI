@@ -7,7 +7,7 @@ from stickyFingers.uniform_cost import *
 from stickyFingers.utility_methods import *
 
 
-class ExamplePlayer:
+class Player:
     def __init__(self, colour):
         """
         This method is called once at the beginning of the game to initialise

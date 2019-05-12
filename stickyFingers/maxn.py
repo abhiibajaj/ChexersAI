@@ -37,10 +37,10 @@ class MaxN:
             # min dist between all pieces?
             score[player_id] -= min_dist
         # board_info.print_board(debug=True)
-        print("PLayer colour for score ", player_colour)
+        #print("PLayer colour for score ", player_colour)
 
-        print("SCORE: ", score)
-        
+        #print("SCORE: ", score)
+
         return score
 
     def calc_square_dist(self, a, b):
@@ -58,7 +58,7 @@ class MaxN:
         vmax = (float('-inf'), float('-inf'), float('-inf'))
         player_pieces = self.get_player_pieces(player_colour, board_info)
 
-        print("Current move: " + str(curr) + " for " + str(player_colour))
+        #print("Current move: " + str(curr) + " for " + str(player_colour))
         for piece in player_pieces:
             # proper formatting
             all_moves = find_moves(piece, player_colour, board_info.board,
@@ -78,8 +78,8 @@ class MaxN:
                     best_a = move
             break
 
-        print(str(player_colour) + " picked " +
-              str(best_a) + " score was : " + str(vmax))
+        # print(str(player_colour) + " picked " +
+        #      str(best_a) + " score was : " + str(vmax))
         # board_info.print_board(debug=True)
 
         return (vmax, best_a)
