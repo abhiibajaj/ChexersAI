@@ -26,13 +26,13 @@ class ExamplePlayer:
 
         self.pieces = self.board_info.player_starts(colour)
         # self.exits = self.board_info.player_exits(colour)
-        
+
         self.maxn_strat = MaxN(self.board_info)
         self.uniform_cost_strat = UniformCostSearch()
 
         # self.update(colour, ("MOVE", ((-3, 0), (-2, 0))))
-        # self.board_info.print_board(debug=True)            
-        
+        # self.board_info.print_board(debug=True)
+
     def action(self):
         """
         This method is called at the beginning of each of your turns to request
@@ -46,9 +46,7 @@ class ExamplePlayer:
         # TODO: Decide what action to take.
         """
 
-        
-
-        (score, action_to_take) = self.maxn_strat.max_n(3, self.colour, 
+        (score, action_to_take) = self.maxn_strat.max_n(3, self.colour,
                                                         self.board_info,
                                                         self.colour)
         print((score, action_to_take))
@@ -63,11 +61,8 @@ class ExamplePlayer:
 
         return action_to_take
 
-
-   
-
     def update_pieces(self, action):
-        
+
         action_type = action[0]
         action_coords = action[1]
 
@@ -82,13 +77,11 @@ class ExamplePlayer:
 
             self.pieces.remove(src)
             self.pieces.add(dest)
-                        # see if we jumped over another colour
+            # see if we jumped over another colour
             if action_type == "JUMP":
                 jumped = jumped_coord(action)
                 # if we did, change its colour
                 self.pieces.add(jumped)
-                
-
 
     def update(self, colour, action):
         """
@@ -114,27 +107,16 @@ class ExamplePlayer:
 
         self.board_info.update_board(colour, action)
 
+        # TODO Make this a func
+        # handle when a piece is converted by the move we just made
         to_remove = set()
-        # if action[0] == "JUMP":
-        
+        # for each of our pieces
         for piece in self.pieces:
+            # if it has been taken by an opponent
             if self.board_info.board[piece] != self.colour:
-               
-
+                # mark it for removal
                 to_remove.add(piece)
-        
-        # Make this a func
+
+        # remove it from our available pieces
         for remove_coords in to_remove:
             self.pieces.remove(remove_coords)
-
-player0 = ExamplePlayer('red')
-player1 = ExamplePlayer('green')
-player2 = ExamplePlayer('blue')
-action  = player0.action()
-# player0.update(player0.colour, action)
-# player1.update(player0.colour, action)
-# player2.update(player0.colour, action)
-# player0.board_info.print_board()
-# player1.action()
-# player2.action()
-

@@ -1,14 +1,13 @@
 import copy
 from math import sqrt
 from stickyFingers.utility_methods import *
-from stickyFingers.uniform_cost import *
+
 
 class MaxN:
-       
+
     def __init__(self, board_info):
         self.board_info = board_info
-        self.uniform_cost_strat = UniformCostSearch()
-        
+
     def is_terminal_board(self):
         # check that a player is 1 move away from winning
         terminal = False
@@ -18,151 +17,71 @@ class MaxN:
 
         return terminal
 
-    def heuristic_square_dist(self, player_colour, board_info):
+    def heuristic(self, player_colour, board_info):
         score = [0, 0, 0]
         player_id = self.get_player_id(player_colour)
         score[player_id] += board_info.scores[player_colour]
 
         # player_pieces = self.get_player_pieces(player_colour, board_info)
 
-        
         min_dist = float('inf')
         for piece, piece_colour in board_info.board.items():
             exits = player_exits(piece_colour)
             player_id = self.get_player_id(piece_colour)
 
             for player_exit in exits:
-                min_dist = min(min_dist, self.calc_square_dist(piece, player_exit))
+                min_dist = min(
+                    min_dist, self.calc_square_dist(piece, player_exit))
                 # print(min_dist)
                 # calc t,
             # min dist between all pieces?
             score[player_id] -= min_dist
         # board_info.print_board(debug=True)
-        # print("PLayer colour for score ", player_colour)
+        print("PLayer colour for score ", player_colour)
 
-        # print("SCORE: ", score)
-
-        # print()
-        # print()
- 
-
-        return score
-
-    def heuristic_score_path(self, player_colour, board_info):
-        score = [0, 0, 0]
-        player_id = self.get_player_id(player_colour)
-
-        score[player_id] += 5*board_info.scores[player_colour]
-
-        # player_pieces = self.get_player_pieces(player_colour, board_info)        
-        for piece, piece_colour in board_info.board.items():
-            exits = player_exits(piece_colour)
-            player_id = self.get_player_id(piece_colour)
-
-            
-            path = self.uniform_cost_strat.uniform_cost_search(
-                piece, piece_colour, board_info.board, board_info.pure_board
-            )
-
-                # print(min_dist)
-                # calc t,
-            # min dist between all pieces?
-            score[player_id] += self.uniform_cost_strat.score_path(
-                path, piece_colour, board_info.board
-            )
-        # board_info.print_board(debug=True)
-        # print("PLayer colour for score ", player_colour)
-
-        # print("SCORE: ", score)
-
-        # print()
-        # print()
- 
-
-        return score
-
-    def heuristic_shortest_path(self, player_colour, board_info):
-        score = [0, 0, 0]
-        player_id = self.get_player_id(player_colour)
-
-        score[player_id] += board_info.scores[player_colour]
-
-        # player_pieces = self.get_player_pieces(player_colour, board_info)        
-        for piece, piece_colour in board_info.board.items():
-            exits = player_exits(piece_colour)
-            player_id = self.get_player_id(piece_colour)
-
-            
-            path = self.uniform_cost_strat.uniform_cost_search(
-                piece, piece_colour, board_info.board, board_info.pure_board
-            )
-
-                # print(min_dist)
-                # calc t,
-            # min dist between all pieces?
-            score[player_id] -= len(path)
-        # board_info.print_board(debug=True)
-        # print("PLayer colour for score ", player_colour)
-
-        # print("SCORE: ", score)
-
-        # print()
-        # print()
- 
-
-        return score
+        print("SCORE: ", score)
         
+        return score
 
     def calc_square_dist(self, a, b):
         return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
-    def max_n(self, depth, player_colour, board_info, prev_colour,curr=0):
-
+    def max_n(self, depth, player_colour, board_info, prev_colour, curr=0):
 
         # Default action
         best_a = ("PASS", None)
 
         if depth == 0 or self.is_terminal_board():
-            evaluation = (self.heuristic_score_path(prev_colour, board_info), 
-                            best_a)
+            evaluation = (self.heuristic(prev_colour, board_info), best_a)
             return evaluation
-
 
         vmax = (float('-inf'), float('-inf'), float('-inf'))
         player_pieces = self.get_player_pieces(player_colour, board_info)
 
-        # print("Current move: " + str(curr) + " for " + str(player_colour))
+        print("Current move: " + str(curr) + " for " + str(player_colour))
         for piece in player_pieces:
-            # proper formatting 
-            all_moves = find_moves(piece, player_colour, board_info.board, 
-                                    board_info.pure_board)
+            # proper formatting
+            all_moves = find_moves(piece, player_colour, board_info.board,
+                                   board_info.pure_board)
             for move in all_moves:
                 board_info_copy = copy.deepcopy(board_info)
-                
 
-                
                 board_info_copy.update_board(player_colour, move)
                 # board_info_copy.print_board()
 
-                (score, _) = self.max_n(depth - 1, 
+                (score, _) = self.max_n(depth - 1,
                                         self.get_next_colour(player_colour),
                                         board_info_copy, player_colour, curr+1)
                 player_id = self.get_player_id(player_colour)
                 if score[player_id] > vmax[player_id]:
-                    
                     vmax = score
                     best_a = move
-                    # Immediate pruning
-                    if vmax == float("inf"):
-                        break
             break
-            
-            
-            
-        
-        # print(str(player_colour) + " picked " + str(best_a) + " score was : " + str(vmax))
+
+        print(str(player_colour) + " picked " +
+              str(best_a) + " score was : " + str(vmax))
         # board_info.print_board(debug=True)
-        
+
         return (vmax, best_a)
 
     def get_player_pieces(self, player_colour, board_info):

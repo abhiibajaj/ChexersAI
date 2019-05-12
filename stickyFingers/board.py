@@ -1,4 +1,6 @@
 from stickyFingers.utility_methods import *
+
+
 class Board:
 
     def __init__(self):
@@ -11,8 +13,6 @@ class Board:
             'blue': 0
         }
 
-
-    
     def create_pieces(self):
         pieces = {}
         for piece in self.pieceList:
@@ -64,7 +64,6 @@ class Board:
                 jumped = jumped_coord(action)
                 # if we did, change its colour
                 self.board[jumped] = colour
-    
 
     def print_board(self, message="", debug=False, **kwargs):
         # Set up the board template:
