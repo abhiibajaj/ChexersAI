@@ -27,7 +27,7 @@ class Player:
         self.pieces = self.board_info.player_starts(colour)
         # self.exits = self.board_info.player_exits(colour)
 
-        self.maxn_strat = MaxN(self.board_info)
+        self.maxn_strat = MaxN("Manhattan")
         self.uniform_cost_strat = UniformCostSearch()
 
         # self.update(colour, ("MOVE", ((-3, 0), (-2, 0))))

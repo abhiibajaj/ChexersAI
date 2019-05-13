@@ -1,12 +1,13 @@
 import copy
 from math import sqrt
 from stickyFingers.utility_methods import *
+from stickyFingers.heuristic_abstract import *
 
 
 class MaxN:
 
-    def __init__(self, board_info):
-        self.board_info = board_info
+    def __init__(self, type):
+        self.strategy = Heurisitic(type)
 
     def is_terminal_board(self, board_info):
         # check that a player is 1 move away from winning
@@ -16,38 +17,7 @@ class MaxN:
         for score in board_info.scores.values():
             terminal = terminal or (score == 4)
 
-        return terminal
-
-    def heuristic(self, player_colour, board_info):
-        score = [0, 0, 0]
-        player_id = self.get_player_id(player_colour)
-        score[player_id] += board_info.scores[player_colour]
-
-        # if we can jump, good
-        # if we can jump over an enemy, good good
-        # if we can be jumped by an enemy, bad
-        # if we are closer to the exit, goodish?
-
-        min_dist = float('inf')
-        max_dist = 100
-        # for each piece on the board
-        for piece, piece_colour in board_info.board.items():
-            # if we are close to the exit, good
-            exits = player_exits(piece_colour)
-            player_id = self.get_player_id(piece_colour)
-
-            # find the closest exit
-            for player_exit in exits:
-                min_dist = min(
-                    min_dist, self.manhattan_dist(piece, player_exit))
-
-            # normalise the score
-            score[player_id] += (max_dist - min_dist) / max_dist
-
-        return score
-
-    def manhattan_dist(self, a, b):
-        return abs(a[0] - b[0]) + abs(a[1] - b[1])
+        return terminal    
 
     def max_n(self, depth, player_colour, board_info, prev_colour, curr=0):
         # Default action
@@ -55,7 +25,7 @@ class MaxN:
 
         # base case or max depth reached
         if depth == 0 or self.is_terminal_board(board_info):
-            evaluation = (self.heuristic(prev_colour, board_info), best_a)
+            evaluation = (self.strategy.score(prev_colour, board_info), best_a)
             return evaluation
 
         vmax = (float('-inf'), float('-inf'), float('-inf'))
@@ -77,7 +47,7 @@ class MaxN:
                 (score, _) = self.max_n(depth - 1, next_player,
                                         board_info_copy, player_colour, curr+1)
 
-                player_id = self.get_player_id(player_colour)
+                player_id = get_player_id(player_colour)
 
                 # store the best move this player can make
                 if score[player_id] > vmax[player_id]:
@@ -100,13 +70,6 @@ class MaxN:
 
         return player_pieces
 
-    def get_player_id(self, player_colour):
-        if player_colour == 'red':
-            return 0
-        elif player_colour == 'green':
-            return 1
-        elif player_colour == 'blue':
-            return 2
 
     def get_next_colour(self, player_colour, board_info):
         # choose the next player

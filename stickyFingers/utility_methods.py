@@ -150,3 +150,11 @@ def player_exits(player_colour):
         return [(-3, 0), (-2, -1), (-1, -2), (0, -3)]
     else:
         return []
+
+def get_player_id(player_colour):
+    if player_colour == 'red':
+        return 0
+    elif player_colour == 'green':
+        return 1
+    elif player_colour == 'blue':
+        return 2

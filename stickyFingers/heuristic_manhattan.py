@@ -1,11 +1,11 @@
-# Come back to this
+from stickyFingers.utility_methods import *
+
 class HeurisiticManhattan:
-    def __init__(self):
-        print("HI")
+    
         
     def score(self, player_colour, board_info):
         score = [0, 0, 0]
-        player_id = self.get_player_id(player_colour)
+        player_id = get_player_id(player_colour)
         score[player_id] += board_info.scores[player_colour]
 
         # if we can jump, good
@@ -19,7 +19,7 @@ class HeurisiticManhattan:
         for piece, piece_colour in board_info.board.items():
             # if we are close to the exit, good
             exits = player_exits(piece_colour)
-            player_id = self.get_player_id(piece_colour)
+            player_id = get_player_id(piece_colour)
 
             # find the closest exit
             for player_exit in exits:
@@ -30,3 +30,6 @@ class HeurisiticManhattan:
             score[player_id] += (max_dist - min_dist) / max_dist
 
         return score
+
+    def manhattan_dist(self, a, b):
+        return abs(a[0] - b[0]) + abs(a[1] - b[1])
