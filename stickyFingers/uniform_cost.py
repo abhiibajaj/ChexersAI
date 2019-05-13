@@ -145,6 +145,9 @@ class UniformCostSearch:
                     closedSet[dest] = (move_type, action_coords)
                     heapq.heappush(
                         openSet, (steps_inc, distance_from_goal, dest))
+        print("DIDN'T FIND A PATH")
+        print(piece, player_colour)
+        print(board)
         return ("PASS", None)
 
     def reconstruct_path(self, curr_coord, seen_moves):

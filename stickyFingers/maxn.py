@@ -82,10 +82,10 @@ class MaxN:
                 if score[player_id] > vmax[player_id]:
                     vmax = score
                     best_a = move
-            break
+            
 
-        print(str(player_colour) + " picked " +
-              str(best_a) + " score was : " + str(vmax))
+        # print(str(player_colour) + " picked " +
+        #       str(best_a) + " score was : " + str(vmax))
         # board_info.print_board(debug=True)
 
         return (vmax, best_a)
