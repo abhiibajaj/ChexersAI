@@ -1,1 +1,1 @@
-from stickyFingersUniformCost.player import ExamplePlayer as Player
+from stickyFingersUniformCost.player import Player

@@ -6,7 +6,7 @@ from stickyFingersUniformCost.uniform_cost import *
 from stickyFingersUniformCost.utility_methods import *
 
 
-class ExamplePlayer:
+class Player:
     def __init__(self, colour):
         """
         This method is called once at the beginning of the game to initialise
@@ -25,12 +25,12 @@ class ExamplePlayer:
 
         self.pieces = self.board_info.player_starts(colour)
         # self.exits = self.board_info.player_exits(colour)
-        
+
         self.uniform_cost_strat = UniformCostSearch()
 
         # self.update(colour, ("MOVE", ((-3, 0), (-2, 0))))
-        # self.board_info.print_board(debug=True)            
-        
+        # self.board_info.print_board(debug=True)
+
     def action(self):
         """
         This method is called at the beginning of each of your turns to request
@@ -44,21 +44,17 @@ class ExamplePlayer:
         # TODO: Decide what action to take.
         """
 
-        
         action_to_take = self.uniform_cost_strat.uniform_action(
             self.pieces, self.colour, self.board_info.board,
             self.board_info.pure_board
         )
-        
-        self.update_pieces(action_to_take)
 
+        self.update_pieces(action_to_take)
+        print("action to take", action_to_take)
         return action_to_take
 
-
-   
-
     def update_pieces(self, action):
-        
+
         action_type = action[0]
         action_coords = action[1]
 
@@ -73,13 +69,11 @@ class ExamplePlayer:
 
             self.pieces.remove(src)
             self.pieces.add(dest)
-                        # see if we jumped over another colour
+            # see if we jumped over another colour
             if action_type == "JUMP":
                 jumped = jumped_coord(action)
                 # if we did, change its colour
                 self.pieces.add(jumped)
-                
-
 
     def update(self, colour, action):
         """
@@ -107,13 +101,12 @@ class ExamplePlayer:
 
         to_remove = set()
         # if action[0] == "JUMP":
-        
+
         for piece in self.pieces:
             if self.board_info.board[piece] != self.colour:
-               
 
                 to_remove.add(piece)
-        
+
         # Make this a func
         for remove_coords in to_remove:
             self.pieces.remove(remove_coords)

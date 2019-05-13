@@ -1,30 +1,33 @@
 from stickyFingersUniformCost.utility_methods import *
 import heapq
 
+
 class UniformCostSearch:
 
     def uniform_action(self, pieces, player_colour, board, pure_board):
 
-        
-        
-        best_path = self.get_shortest_path(pieces, player_colour, board, pure_board)
+        best_path = self.get_shortest_path(
+            pieces, player_colour, board, pure_board)
+
+        # no path to exit, do nothing
+        if len(best_path) == 0:
+            return ("PASS", None)
+
         action = best_path[0]
         return action
-    
+
     def get_shortest_path(self, pieces, player_colour, board, pure_board):
-        all_paths = self.all_piece_paths(pieces, player_colour, board, 
+        all_paths = self.all_piece_paths(pieces, player_colour, board,
                                          pure_board)
-        
-        
+
         best_path = self.shortest_path(all_paths)
 
         return best_path
+
     def shortest_path(self, paths):
 
-        if len(paths) == 0:
-            return [("PASS", None)]
-        shortest_path = None
-        shortest_len  = float("inf")
+        shortest_path = []
+        shortest_len = float("inf")
 
         for path in paths.values():
             path_len = len(path)
@@ -32,7 +35,6 @@ class UniformCostSearch:
                 shortest_len = path_len
                 shortest_path = path
         return shortest_path
-            
 
     def all_piece_paths(self, pieces, player_colour, board, pure_board):
         """
@@ -47,7 +49,6 @@ class UniformCostSearch:
             paths[piece] = path
 
         return paths
-    
 
     def score_path(self, path):
         """
@@ -57,7 +58,7 @@ class UniformCostSearch:
         * `path` -- a list of a 3 tuple (piece_location, piece_destination, move_type)
         this path should contain the moves a piece should take to exit the board.
         """
-        score = 0  
+        score = 0
         if path == ("PASS", None):
             return float("-inf")
 
@@ -70,12 +71,13 @@ class UniformCostSearch:
             try:
                 action_type, _ = move
             except:
+                # something strange has happened
                 print(path)
             # favour jumps in the near future
             if action_type == "JUMP":
                 score += 1
-                              
-            index+=1
+
+            index += 1
 
         return score
 
@@ -87,7 +89,7 @@ class UniformCostSearch:
             if path == None:
                 continue
             # score this path
-            my_score = score_path(path)
+            my_score = self.score_path(path)
             # keep the best
             if (best_path == None) or my_score < best_score:
                 best_score = my_score
@@ -118,16 +120,15 @@ class UniformCostSearch:
         while openSet:
             steps, _, the_piece = heapq.heappop(openSet)
 
-            if is_exit(the_piece, player_colour):            
+            if is_exit(the_piece, player_colour):
                 # reconstruct the path that got us to the exit
                 return self.reconstruct_path(the_piece, closedSet)
 
             # find the moves this piece can make
-            
-            my_moves = find_moves(the_piece, player_colour, board, 
-                                    pure_board)
-            
-            
+
+            my_moves = find_moves(the_piece, player_colour, board,
+                                  pure_board)
+
             # for each move
             for move in my_moves:
                 steps_inc = steps + 1
@@ -142,9 +143,9 @@ class UniformCostSearch:
                 if dest not in closedSet.keys():
                     # it does, add it to the heap
                     closedSet[dest] = (move_type, action_coords)
-                    heapq.heappush(openSet, (steps_inc, distance_from_goal, dest))
+                    heapq.heappush(
+                        openSet, (steps_inc, distance_from_goal, dest))
         return ("PASS", None)
-
 
     def reconstruct_path(self, curr_coord, seen_moves):
         """

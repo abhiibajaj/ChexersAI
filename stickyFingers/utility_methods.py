@@ -19,6 +19,7 @@ def find_moves(piece, player_colour, board, pure_board):
     moves += regular_moves(piece, board, pure_board)
     return moves
 
+
 def jumped_coord(action):
     # do maths
     # get player coord we jumped over
@@ -32,6 +33,7 @@ def jumped_coord(action):
     jumpedy = src[1] + piece_sign(ydir)
 
     return (jumpedx, jumpedy)
+
 
 def piece_sign(pdir):
     if pdir == 0:
@@ -51,7 +53,7 @@ def jump_moves(piece, board, pure_board):
         where player is a String color, ie "red"
     """
     regular_moves = radial_moves(piece, 1)
-    jump_moves    = radial_moves(piece, 2)
+    jump_moves = radial_moves(piece, 2)
 
     valid_moves = []
     # filter out invalid moves
@@ -71,6 +73,7 @@ def jump_moves(piece, board, pure_board):
 
     return valid_moves
 
+
 def regular_moves(piece, board, pure_board):
     """
     Find all valid regular moves a piece can make given a board state.
@@ -79,7 +82,7 @@ def regular_moves(piece, board, pure_board):
     * `board` -- a dictionary of { piece : player } representing the board state
         where player is a String color, ie "red"
     """
-    moves       = radial_moves(piece, 1)
+    moves = radial_moves(piece, 1)
     valid_moves = []
 
     # filter out invalid moves
@@ -94,6 +97,7 @@ def regular_moves(piece, board, pure_board):
 
     return valid_moves
 
+
 def radial_moves(piece, radius):
     """
     Helper function to find all radial moves outward from a center coordinate.
@@ -103,15 +107,16 @@ def radial_moves(piece, radius):
         ie. radius 1 = a regular move
         radius 2 = a jump move
     """
-        
-    east      = (piece[0] + radius, piece[1])
-    west      = (piece[0] - radius, piece[1])
-    northwest = (piece[0]         , piece[1] - radius)
+
+    east = (piece[0] + radius, piece[1])
+    west = (piece[0] - radius, piece[1])
+    northwest = (piece[0], piece[1] - radius)
     northeast = (piece[0] + radius, piece[1] - radius)
     southwest = (piece[0] - radius, piece[1] + radius)
-    southeast = (piece[0]         , piece[1] + radius)
+    southeast = (piece[0], piece[1] + radius)
 
     return [east, west, northeast, northwest, southeast, southwest]
+
 
 def is_exit(piece, player_colour):
     """
@@ -129,6 +134,8 @@ def is_exit(piece, player_colour):
         return (piece in player_exits("blue"))
 
 # all exits for each color
+
+
 def player_exits(player_colour):
     """
     Return the exits for a given piece colour
