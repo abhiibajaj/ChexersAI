@@ -53,6 +53,10 @@ class MaxN:
                 if score[player_id] > vmax[player_id]:
                     vmax = score
                     best_a = move
+                
+                # Do somrthing here, minimise everyone else
+                if score[player_id] == vmax[player_id]:
+                    pass
             
 
         # print(str(player_colour) + " picked " +

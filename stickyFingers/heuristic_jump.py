@@ -24,20 +24,20 @@ class HeuristicJump:
                     score[player_id] -= pieces_count_copy
 
 
-        for piece, piece_colour in board_info.board.items():
-            player_id = get_player_id(piece_colour)
+        # for piece, piece_colour in board_info.board.items():
+        #     player_id = get_player_id(piece_colour)
 
-            # if piece can be captured -1
-            possible_radials = radial_moves(piece, 1)
-            for move in possible_radials:
-                if move in board_info.pure_board:
-                    try:
-                        collision_piece = board_info.board[move]
-                        if collision_piece != piece_colour:
-                            score[player_id] -= 0.5
+        #     # if piece can be captured -1
+        #     possible_radials = radial_moves(piece, 1)
+        #     for move in possible_radials:
+        #         if move in board_info.pure_board:
+        #             try:
+        #                 collision_piece = board_info.board[move]
+        #                 if collision_piece != piece_colour:
+        #                     score[player_id] -= 0.25
                         
-                    except KeyError:
-                        pass
+        #             except KeyError:
+        #                 pass
 
         return score
     def manhattan_dist(self, a, b):

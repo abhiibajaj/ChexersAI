@@ -58,13 +58,12 @@ class Player:
             maxnFlag = False
 
         if maxnFlag:
-            (score, action_to_take) = self.maxn_strat.max_n(4, self.colour,
+            (score, action_to_take) = self.maxn_strat.max_n(3, self.colour,
                                                             self.board_info,
                                                             self.colour)
-            print((score, action_to_take))
+            # print((score, action_to_take))
             
         else:
-            print("HEREHHEH")
             action_to_take = self.uniform_cost_strat.uniform_action(
                 self.pieces, self.colour, self.board_info.board,
                 self.board_info.pure_board
@@ -136,7 +135,7 @@ class Player:
             self.pieces.remove(remove_coords)
 
 
-player0 = Player('red')
-player1 = Player('green')
-player2 = Player('blue')
-action  = player0.action()
+# player0 = Player('red')
+# player1 = Player('green')
+# player2 = Player('blue')
+# action  = player0.action()
