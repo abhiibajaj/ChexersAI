@@ -43,8 +43,8 @@ if sys.stdout.isatty():
     # Yay! We can use colour
     _DISPLAY = { # something 5 characters wide for each colour:
         'r': "  R  ",
-        'g': "  X  ",
-        'b': "  O  ",
+        'g': "  G  ",
+        'b': "  B  ",
         ' ': "     "
     }
 else:

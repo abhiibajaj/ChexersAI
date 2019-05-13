@@ -8,11 +8,12 @@ class MaxN:
     def __init__(self, board_info):
         self.board_info = board_info
 
-    def is_terminal_board(self):
+    def is_terminal_board(self, board_info):
         # check that a player is 1 move away from winning
         terminal = False
 
-        for score in self.board_info.scores.values():
+        # check if the new board state is terminal zz
+        for score in board_info.scores.values():
             terminal = terminal or (score == 4)
 
         return terminal
@@ -53,7 +54,7 @@ class MaxN:
         best_a = ("PASS", None)
 
         # base case or max depth reached
-        if depth == 0 or self.is_terminal_board():
+        if depth == 0 or self.is_terminal_board(board_info):
             evaluation = (self.heuristic(prev_colour, board_info), best_a)
             return evaluation
 
