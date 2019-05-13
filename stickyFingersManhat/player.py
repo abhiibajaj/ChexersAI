@@ -28,7 +28,7 @@ class Player:
         self.pieces = self.board_info.player_starts(colour)
         # self.exits = self.board_info.player_exits(colour)
 
-        self.maxn_strat = MaxN("Jump")
+        self.maxn_strat = MaxN("Manhattan")
         self.uniform_cost_strat = UniformCostSearch()
 
         # self.update(colour, ("MOVE", ((-3, 0), (-2, 0))))
@@ -47,18 +47,26 @@ class Player:
         # TODO: Decide what action to take.
         """
         maxnFlag = True
+        uniform_counter = 0
 
         num_pieces = defaultdict(int)
         for piece, piece_colour in self.board_info.board.items():
             num_pieces[piece_colour] += 1
         
+        for piece_colour, piece_count in num_pieces.items():
+
+            if piece_colour != self.colour:
+                if (piece_count + self.board_info.scores[piece_colour]) >= 4:
+                    maxnFlag = True
+                    break
+                else:
+                    uniform_counter += 1
         
-        
-        if len(num_pieces) == 1:
-            maxnFlag = False
+        # if uniform_counter == 2:
+        #     maxnFlag = False
 
         if maxnFlag:
-            (score, action_to_take) = self.maxn_strat.max_n(4, self.colour,
+            (score, action_to_take) = self.maxn_strat.max_n(3, self.colour,
                                                             self.board_info,
                                                             self.colour)
             print((score, action_to_take))

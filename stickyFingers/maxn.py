@@ -6,8 +6,8 @@ from stickyFingers.heuristic_abstract import *
 
 class MaxN:
 
-    def __init__(self, type):
-        self.strategy = Heurisitic(type)
+    def __init__(self, strategy):
+        self.strategy = Heurisitic(strategy)
 
     def is_terminal_board(self, board_info):
         # check that a player is 1 move away from winning
