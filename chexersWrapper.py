@@ -4,14 +4,14 @@
 from __future__ import print_function
 from subprocess import Popen, PIPE, STDOUT
 import io
-import time
+import sys
 
 
 class chexersWrapper:
     def __init__(self, on_gameover, on_turn):
 
         proc = Popen([
-            'C:/Users/Matt/AppData/Local/Programs/Python/Python36/python.exe',
+            sys.executable,
             '-m', 'referee',
             'stickyFingers',
             'stickyFingers',
