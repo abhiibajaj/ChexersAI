@@ -30,7 +30,7 @@ class Player:
 
         self.maxn_strat = MaxN("Jump")
         self.uniform_cost_strat = UniformCostSearch()
-
+        self.moves_made = 0
         # self.update(colour, ("MOVE", ((-3, 0), (-2, 0))))
         # self.board_info.print_board(debug=True)
 
@@ -69,7 +69,7 @@ class Player:
                 self.board_info.pure_board
             )   
 
-
+        self.moves_made+=1
         self.update_pieces(action_to_take)
 
         return action_to_take

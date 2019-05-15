@@ -35,28 +35,40 @@ class MaxN:
         for piece in player_pieces:
             all_moves = find_moves(piece, player_colour, board_info.board,
                                    board_info.pure_board)
+                                
             # for each move this piece can make
             for move in all_moves:
-                # evaluate the worth of this move
-                board_info_copy = copy.deepcopy(board_info)
-                board_info_copy.update_board(player_colour, move)
+                safe_to_make = self.safe_move(move, player_colour, board_info.board, board_info.pure_board)
+                 
+                if safe_to_make:
+                    # evaluate the worth of this move
+                    board_info_copy = copy.deepcopy(board_info)
+                    board_info_copy.update_board(player_colour, move)
 
-                next_player = self.get_next_colour(
-                    player_colour, board_info_copy)
+                    next_player = self.get_next_colour(
+                        player_colour, board_info_copy)
 
-                (score, _) = self.max_n(depth - 1, next_player,
-                                        board_info_copy, player_colour, curr+1)
-
-                player_id = get_player_id(player_colour)
-
-                # store the best move this player can make
-                if score[player_id] > vmax[player_id]:
-                    vmax = score
-                    best_a = move
+                    (score, _) = self.max_n(depth - 1, next_player,
+                                            board_info_copy, player_colour, curr+1)
                 
-                # Do somrthing here, minimise everyone else
-                if score[player_id] == vmax[player_id]:
+                    player_id = get_player_id(player_colour)
+
+                    # store the best move this player can make
+                    if score[player_id] > vmax[player_id]:
+                        vmax = score
+                        best_a = move
+                        if vmax == float('inf'):
+                            break
+                    
+                    # Do somrthing here, minimise everyone else
+                    elif score[player_id] == vmax[player_id]:
+                        print(vmax)
+                        
+                else:
                     pass
+                if vmax == float('inf'):
+                    break
+
             
 
         # print(str(player_colour) + " picked " +
@@ -64,6 +76,28 @@ class MaxN:
         # board_info.print_board(debug=True)
 
         return (vmax, best_a)
+
+
+    def safe_move(self, move, player_colour, board, pure_board):
+        # CHECK FOR COLLISIONS DON't MAKE EVEN LOOK AT MOVE IF YOU CAN BE CAPTURED
+        if move[0] == 'EXIT':
+            return True
+        
+        piece = move[1][1]
+        safe_to_make = True
+        possible_radials = radial_moves(piece, 1)
+        for radial_move in possible_radials:
+            if radial_move in pure_board:
+                try:
+                    collision_piece = board[radial_move]
+                    if collision_piece != player_colour:
+                        safe_to_make = False
+                        break
+                            
+                except KeyError:
+                        pass
+        return safe_to_make
+
 
     def get_player_pieces(self, player_colour, board_info):
         player_pieces = set()
