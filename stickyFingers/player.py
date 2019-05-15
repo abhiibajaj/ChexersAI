@@ -58,7 +58,7 @@ class Player:
             maxnFlag = False
 
         if maxnFlag:
-            (score, action_to_take) = self.maxn_strat.max_n(3, self.colour,
+            (score, action_to_take) = self.maxn_strat.max_n(4, self.colour,
                                                             self.board_info,
                                                             self.colour)
             # print((score, action_to_take))

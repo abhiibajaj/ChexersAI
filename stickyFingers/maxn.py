@@ -38,8 +38,9 @@ class MaxN:
                                 
             # for each move this piece can make
             for move in all_moves:
-                safe_to_make = self.safe_move(move, player_colour, board_info.board, board_info.pure_board)
-                 
+                # board_info.print_board()
+                safe_to_make = self.safe_move(move, player_colour, board_info)
+                # safe_to_make = True
                 if safe_to_make:
                     # evaluate the worth of this move
                     board_info_copy = copy.deepcopy(board_info)
@@ -88,7 +89,7 @@ class MaxN:
         return (vmax, best_a)
 
 
-    def safe_move(self, move, player_colour, board, pure_board):
+    def safe_move(self, move, player_colour, board_info):
         # CHECK FOR COLLISIONS DON't MAKE EVEN LOOK AT MOVE IF YOU CAN BE CAPTURED
         if move[0] == 'EXIT':
             return True
@@ -96,13 +97,26 @@ class MaxN:
         piece = move[1][1]
         safe_to_make = True
         possible_radials = radial_moves(piece, 1)
+
+        board_info_copy = copy.deepcopy(board_info)
+        board_info_copy.update_board(player_colour, move)
+        
         for radial_move in possible_radials:
-            if radial_move in pure_board:
+            if radial_move in board_info.pure_board:
                 try:
-                    collision_piece = board[radial_move]
+                    collision_piece = board_info_copy.board[radial_move]
+                    # can be captured
                     if collision_piece != player_colour:
-                        safe_to_make = False
-                        break
+                        # what if there is a person on the other side
+                        # get jump moves for radial move and see if it can be captured
+                        
+                        # print('{} at {} where {} would {}'.format(collision_piece, radial_move, player_colour, move))
+                        jump_for_radials = jump_moves(radial_move, board_info_copy.board, board_info.pure_board)
+                        for jumps in jump_for_radials:
+                            if jumped_coord(jumps) == piece:
+                                
+                                return False
+                        
                             
                 except KeyError:
                         pass
