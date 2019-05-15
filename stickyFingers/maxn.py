@@ -57,12 +57,22 @@ class MaxN:
                     if score[player_id] > vmax[player_id]:
                         vmax = score
                         best_a = move
-                        if vmax == float('inf'):
-                            break
+                        
                     
                     # Do somrthing here, minimise everyone else
                     elif score[player_id] == vmax[player_id]:
-                        print(vmax)
+                        score_other = sum(score)
+                        score_vmax_other = sum(vmax)
+
+                        if score_other < score_vmax_other:
+                            print("MINIMISED {} to {} ".format(score_vmax_other, score_other))
+                            vmax = score
+                            best_a = move
+                    
+                    if vmax == float('inf'):
+                        break
+                        
+
                         
                 else:
                     pass
