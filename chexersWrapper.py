@@ -7,109 +7,66 @@ import io
 import time
 
 
-class Game:
-    def __init__(self, mlfun):
+class chexersWrapper:
+    def __init__(self, on_gameover, on_turn):
 
         proc = Popen([
             'C:/Users/Matt/AppData/Local/Programs/Python/Python36/python.exe',
             '-m', 'referee',
-            'stickyFingersJump0',
-            'stickyFingersJump0',
+            'stickyFingers',
+            'stickyFingers',
             'stickyFingersIO'
         ], cwd='./', stdin=PIPE, stdout=PIPE, stderr=STDOUT, bufsize=1)
 
         # stickyFingersIO is the 3rd argument, therefore blue (rgb)
         colour = 'blue'
-        count = 0
         # while the subprocess is writing to stdout
         while proc.poll() is None:
+            # get a line from the stdout
             line = proc.stdout.readline()
-            line = line.decode('utf8')
-            print(line)
-            if line.startswith("IOSTATE"):
-                print("IOSTATE")
-                count += 1
+            # print(line)
+            # check if we won
+            if line.startswith(b"* winner:"):
+                # get the winner from stdout
+                line = line[10:]
+                line = line.decode('utf8')
+                line = line.rstrip().lower()
+                win = line == colour
+                # pass to on gameover handler
+                on_gameover(win)
+                continue
+
+            # if it's our move
+            if line.startswith(b"IOSTATE"):
+                line = line.decode('utf8')
+                # get the state as a dictionary
                 state = eval(line[8:])
-                print("State: ", state)
-
-                action = ('MOVE', ((2, 1), (1, 1)))
-                if count == 2:
-                    action = ('MOVE', ((0, 3), (0, 2)))
-                print(count)
-
+                # pass the state to the on_turn handler
+                action = on_turn(state)
                 # convert action to byte
                 action = "{}\n".format(str(action))
                 action = bytes(action, 'utf-8')
+
                 # write to the stdin
                 proc.stdin.write(action)
+
                 # flush it so the subprocess continues
                 proc.stdin.flush()
-
-        # wait for the subprocess to close
-        proc.wait()
-        """
-        for line in io.TextIOWrapper(proc.stdout, encoding="utf-8"):
-            print(line)
-            if line.startswith("IOSTATE"):
-                count += 1
-                state = eval(line[8:])
-                print("State: ", state)
-
-                # get action from somewhere
-
-                action = ('MOVE', ((2, 1), (1, 1)))
-                # if count == 2:
-                #   action = ('MOVE', ((0, 3), (0, 2)))
-                print(count)
-                # conert to a string
-                action = "{}".format(str(action))
-                # convert to bytes for proc.communicate
-                action = bytes(action, 'utf-8')
-                proc.stdin.write(action)
-                #print(action, file=proc.stdin)
-                proc.stdin.flush()
-                #outs, errs = proc.communicate(input=action)
-                #print(outs, errs)
-                # proc.stdin.close()
-
-        """
-        """
-        count = 0
-        out = proc.stdout.readline()
-        while out:
-            line = out.decode('utf8')
-            line = line.rstrip()
-
-            print(line)
-
-            if "IOSTATE" in line:
-                count += 1
-                state = eval(line[8:])
-                print("State: ", state)
-
-                # get action from somewhere
-                action = ('MOVE', ((2, 1), (1, 1)))
-                if count == 2:
-                    action = ('MOVE', ((0, 3), (0, 2)))
-                print(count)
-
-                # conert to a string
-                action = "{}".format(str(action))
-
-                # convert to bytes for proc.communicate
-                action = bytes(action, 'utf-8')
-
-                proc.stdin.write(action)
-
                 continue
 
-            out = proc.stdout.readline()
-        print("left loop")
-        """
+        print("GAMEEXIT")
+        # wait for the subprocess to close
+        proc.wait()
 
 
-def mlfun():
-    pass
+def handle_gameover(victory):
+    print("Did we win? ", victory)
 
 
-Game(mlfun)
+def handle_turn(state):
+    print("State: ", state)
+    action = ('MOVE', ((2, 1), (1, 1)))
+    return action
+
+
+chexersWrapper(handle_gameover, handle_turn)
