@@ -10,6 +10,7 @@ class OpeningStrategy:
 
     def move(self):
 
+        moves_count = {}
         # for all our pieces
         for piece in self.player.pieces:
             # if it's in the starting zone
@@ -22,9 +23,38 @@ class OpeningStrategy:
                     if dest not in self.board_info.player_starts(self.player.colour):
                         # if it's safe
                         if self.safe_move(move, self.player.colour, self.board_info):
-                            # do it
-                            return move
+                            # check how many collisions it has
+                            moves_count[move] = self.closest_together(
+                                move, self.player.colour, self.board_info)
+        if len(moves_count) > 0:
+            move_max_count = max(moves_count, key=moves_count.get)
+            return move_max_count
         return None
+
+    def closest_together(self, move, player_colour, board_info):
+
+        count = 0
+        piece = move[1][1]
+        possible_radials = radial_moves(piece, 1)
+
+        board_info_copy = copy.deepcopy(board_info)
+        # get the next board state
+        board_info_copy.update_board(player_colour, move)
+
+        # for possible moves
+        for radial_move in possible_radials:
+            # if the move exists
+            if radial_move in board_info.pure_board:
+                # if there is a piece we are touching
+                try:
+                    collision_piece = board_info_copy.board[radial_move]
+                    # if it is a piece we own, increase count
+                    if collision_piece == player_colour:
+                        count += 1
+                except KeyError:
+                    pass
+
+        return count
 
     def safe_move(self, move, player_colour, board_info):
 

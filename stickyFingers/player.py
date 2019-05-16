@@ -68,7 +68,7 @@ class Player:
             (score, action_to_take) = self.maxn_strat.max_n(3, self.colour,
                                                             self.board_info,
                                                             self.colour)
-            print((score, action_to_take))
+            # print((score, action_to_take))
 
         elif self.opening_flag is False and self.maxn_flag is False:
             action_to_take = self.uniform_cost_strat.uniform_action(
