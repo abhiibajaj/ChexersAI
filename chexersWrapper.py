@@ -8,7 +8,9 @@ import sys
 
 
 class chexersWrapper:
-    def run(self, on_gameover, on_turn):
+    def run(self, on_gameover, on_turn, on_gameerror):
+
+        game_memory = []
 
         proc = Popen([
             sys.executable,
@@ -20,6 +22,7 @@ class chexersWrapper:
 
         # stickyFingersIO is the 3rd argument, therefore blue (rgb)
         colour = 'blue'
+        win = False
         # while the subprocess is writing to stdout
         while proc.poll() is None:
             # get a line from the stdout
@@ -32,6 +35,7 @@ class chexersWrapper:
                 line = line.decode('utf8')
                 line = line.rstrip().lower()
                 # pass to on gameover handler
+                win = True
                 on_gameover(line)
                 continue
 
@@ -42,6 +46,12 @@ class chexersWrapper:
                 colour, state = eval(line[8:])
                 # pass the state to the on_turn handler
                 action = on_turn(colour, state)
+
+                # add it to the game memory
+                game_memory.append([
+                    state, action
+                ])
+
                 # convert action to byte
                 action = "{}\n".format(str(action))
                 action = bytes(action, 'utf-8')
@@ -51,8 +61,13 @@ class chexersWrapper:
 
                 # flush it so the subprocess continues
                 proc.stdin.flush()
+
                 continue
 
-        print("GAMEEXIT")
+        # the game ended without a winner, this is bad
+        if not win:
+            on_gameerror()
+
         # wait for the subprocess to close
         proc.wait()
+        return game_memory
