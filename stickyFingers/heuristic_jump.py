@@ -28,6 +28,7 @@ class HeuristicJump:
             #     if piece_colour != piece_colour_copy:
 
             #         score[player_id] -= pieces_count_copy
+         
 
         return score
   

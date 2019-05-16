@@ -3,6 +3,7 @@ from stickyFingers.board import *
 import sys
 import heapq
 from stickyFingers.maxn import *
+from stickyFingers.openingstrat import *
 from stickyFingers.uniform_cost import *
 from stickyFingers.utility_methods import *
 from collections import defaultdict
@@ -27,7 +28,9 @@ class Player:
 
         self.pieces = self.board_info.player_starts(colour)
         # self.exits = self.board_info.player_exits(colour)
-
+        self.opening_flag = True
+        self.maxn_flag = False
+        self.opening_strat = OpeningStrategy(self, self.board_info)
         self.maxn_strat = MaxN("Jump")
         self.uniform_cost_strat = UniformCostSearch()
         self.moves_made = 0
@@ -46,30 +49,34 @@ class Player:
         actions.
         # TODO: Decide what action to take.
         """
-        maxnFlag = True
 
         num_pieces = defaultdict(int)
         for piece, piece_colour in self.board_info.board.items():
             num_pieces[piece_colour] += 1
-        
-        
-        
-        if len(num_pieces) == 1:
-            maxnFlag = False
 
-        if maxnFlag:
+        # make opening moves until done
+        if self.opening_flag:
+            action_to_take = self.opening_strat.move()
+            if action_to_take is None:
+                self.opening_flag = False
+                self.maxn_flag = True
+
+        if len(num_pieces) == 1:
+            self.maxn_flag = False
+
+        if self.maxn_flag:
             (score, action_to_take) = self.maxn_strat.max_n(3, self.colour,
                                                             self.board_info,
                                                             self.colour)
-            # print((score, action_to_take))
-            
-        else:
+            print((score, action_to_take))
+
+        elif self.opening_flag is False and self.maxn_flag is False:
             action_to_take = self.uniform_cost_strat.uniform_action(
                 self.pieces, self.colour, self.board_info.board,
                 self.board_info.pure_board
-            )   
+            )
 
-        self.moves_made+=1
+        self.moves_made += 1
         self.update_pieces(action_to_take)
 
         return action_to_take
