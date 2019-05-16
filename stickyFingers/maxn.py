@@ -39,8 +39,8 @@ class MaxN:
             # for each move this piece can make
             for move in all_moves:
                 # board_info.print_board()
-                safe_to_make = self.safe_move(move, player_colour, board_info)
-                # safe_to_make = True
+                # safe_to_make = self.safe_move(move, player_colour, board_info)
+                safe_to_make = True
                 if safe_to_make:
                     # evaluate the worth of this move
                     board_info_copy = copy.deepcopy(board_info)

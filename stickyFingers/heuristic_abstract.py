@@ -1,12 +1,12 @@
-from stickyFingers.heuristic_manhattan import *
 from stickyFingers.heuristic_jump import *
+from stickyFingers.heuristic_jump_v0 import *
+
 
 class Heurisitic:
 
     def __new__(self, strategy):
-        if strategy == "Manhattan":
-            return HeurisiticManhattan()
+        if strategy == "Jumpv0":
+            return HeurisiticJump0()
         elif strategy == "Jump":
             return HeuristicJump()
 
-a = Heurisitic("Manhattan")

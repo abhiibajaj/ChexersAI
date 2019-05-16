@@ -30,8 +30,7 @@ class HeuristicJump:
             #         score[player_id] -= pieces_count_copy
 
         return score
-    def manhattan_dist(self, a, b):
-        return abs(a[0] - b[0]) + abs(a[1] - b[1])
+  
 
 
                 
