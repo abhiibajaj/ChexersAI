@@ -8,13 +8,13 @@ import sys
 
 
 class chexersWrapper:
-    def __init__(self, on_gameover, on_turn):
+    def run(self, on_gameover, on_turn):
 
         proc = Popen([
             sys.executable,
             '-m', 'referee',
-            'stickyFingers',
-            'stickyFingers',
+            'stickyFingersUniformCost',
+            'stickyFingersUniformCost',
             'stickyFingersIO'
         ], cwd='./', stdin=PIPE, stdout=PIPE, stderr=STDOUT, bufsize=1)
 
@@ -31,18 +31,17 @@ class chexersWrapper:
                 line = line[10:]
                 line = line.decode('utf8')
                 line = line.rstrip().lower()
-                win = line == colour
                 # pass to on gameover handler
-                on_gameover(win)
+                on_gameover(line)
                 continue
 
             # if it's our move
             if line.startswith(b"IOSTATE"):
                 line = line.decode('utf8')
                 # get the state as a dictionary
-                state = eval(line[8:])
+                colour, state = eval(line[8:])
                 # pass the state to the on_turn handler
-                action = on_turn(state)
+                action = on_turn(colour, state)
                 # convert action to byte
                 action = "{}\n".format(str(action))
                 action = bytes(action, 'utf-8')
@@ -57,16 +56,3 @@ class chexersWrapper:
         print("GAMEEXIT")
         # wait for the subprocess to close
         proc.wait()
-
-
-def handle_gameover(victory):
-    print("Did we win? ", victory)
-
-
-def handle_turn(state):
-    print("State: ", state)
-    action = ('MOVE', ((2, 1), (1, 1)))
-    return action
-
-
-chexersWrapper(handle_gameover, handle_turn)

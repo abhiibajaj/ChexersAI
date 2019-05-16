@@ -50,7 +50,7 @@ class Player:
         print("action to take", action_to_take)
         """
 
-        print('IOSTATE ', self.board_info.board)
+        print('IOSTATE ', (self.colour, self.board_info.board))
         action = input("Enter a move: ")
         action = eval(action)
         self.update_pieces(action)
