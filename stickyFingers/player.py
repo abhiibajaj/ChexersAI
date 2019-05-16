@@ -56,6 +56,7 @@ class Player:
 
         # make opening moves until done
         if self.opening_flag:
+            # print("OPENING")
             action_to_take = self.opening_strat.move()
             if action_to_take is None:
                 self.opening_flag = False
@@ -65,6 +66,7 @@ class Player:
             self.maxn_flag = False
 
         if self.maxn_flag:
+            # print("NOT OPENING")
             (score, action_to_take) = self.maxn_strat.max_n(3, self.colour,
                                                             self.board_info,
                                                             self.colour)

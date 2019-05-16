@@ -1,3 +1,6 @@
+import copy
+
+
 def find_moves(piece, player_colour, board, pure_board):
     """
     All valid moves by a piece given a board state.
@@ -133,7 +136,45 @@ def is_exit(piece, player_colour):
     if player_colour == "blue":
         return (piece in player_exits("blue"))
 
-# all exits for each color
+
+def close_by_friends(piece, player_colour, board):
+
+    # return friendly pieces that you are close to
+    friendly_pieces = 0
+    possible_radials = radial_moves(piece, 1)
+
+    for radial in possible_radials:
+        # check if the radial is the same colour as you
+        try:
+            collision_piece = board[radial]
+            if collision_piece == player_colour:
+                friendly_pieces += 1
+        except KeyError:
+            pass
+    return friendly_pieces
+
+
+def can_be_captured(piece, player_colour, board, pure_board):
+
+    possible_radials = radial_moves(piece, 1)
+    for radial in possible_radials:
+
+        try:
+            collision_piece = board[radial]
+            # check if can be captured by seeing if anyone can actually jump
+            # over it
+            if collision_piece != player_colour:
+
+                # check the jump moves for the collision piece
+                jump_radials = jump_moves(radial, board, pure_board)
+                for jump in jump_radials:
+                    # if you jump over the piece, return false
+                    if jumped_coord(jump) == piece:
+                        print('{} can be captured by {}'.format(piece, radial))
+                        return True
+        except KeyError:
+            pass
+    return False
 
 
 def player_exits(player_colour):
@@ -150,6 +191,7 @@ def player_exits(player_colour):
         return [(-3, 0), (-2, -1), (-1, -2), (0, -3)]
     else:
         return []
+
 
 def get_player_id(player_colour):
     if player_colour == 'red':

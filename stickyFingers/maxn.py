@@ -65,8 +65,8 @@ class MaxN:
                         score_vmax_other = sum(vmax)
 
                         if score_other < score_vmax_other:
-                            print("MINIMISED {} to {} ".format(
-                                score_vmax_other, score_other))
+                            # print("MINIMISED {} to {} ".format(
+                            #     score_vmax_other, score_other))
                             vmax = score
                             best_a = move
 
