@@ -200,3 +200,7 @@ def get_player_id(player_colour):
         return 1
     elif player_colour == 'blue':
         return 2
+
+
+def manhattan_dist(a, b):
+    return abs(a[0] - b[0]) + abs(a[1] - b[1])

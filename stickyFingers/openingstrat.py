@@ -13,7 +13,6 @@ class OpeningStrategy:
         # if any of our pieces can be captured, then we want to give reign
         # to maxn as opening can't look far ahead
         for piece in self.player.pieces:
-            print(piece)
             if can_be_captured(piece, self.player.colour, self.board_info.board, self.board_info.pure_board):
                 print("WE CAN BE CAPTURED")
 

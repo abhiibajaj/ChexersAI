@@ -39,7 +39,7 @@ class UniformCostSearch:
         """
         # if pieces are not there:
         # return ((PASS, "NONE"))
-        
+
         paths = {}
         # for each piece
         for piece in pieces:
