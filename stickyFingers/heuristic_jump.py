@@ -9,17 +9,13 @@ class HeuristicJump:
 
     def score(self, player_colour, board_info):
 
-        score = [0, 0, 0]
+        score_total = [0, 0, 0]
 
-        # Weight the distance from the goal
-
-        # THIS IS IF YOU DO IT WITH UNIFORM COST, TAKES WAY TOO LONG
-        # for piece, piece_colour in board_info.board.items():
-        #     player_id = get_player_id(piece_colour)
-        #     # Get the path for the current piece and subtract it from the score
-        #     path = self.uniform_cost_strat.uniform_cost_search(
-        #         piece, piece_colour, board_info.board, board_info.pure_board)
-        #     score[player_id] -= len(path)
+        score_manhat = [0, 0, 0]
+        score_friends = [0, 0, 0]
+        score_points = [0, 0, 0]
+        score_threatned = [0, 0, 0]
+        score_pieces_alive = [0, 0, 0]
 
         # Get how many pieces each player has
         num_pieces = defaultdict(int)
@@ -38,16 +34,17 @@ class HeuristicJump:
                 min_dist = min(
                     min_dist,  manhattan_dist(piece, player_exit))
 
-            score[player_id] = ((1 / num_pieces[piece_colour]) * min_dist)
+            score_manhat[player_id] -= (
+                (1 / num_pieces[piece_colour]) * min_dist)
 
         # Account for how many pieces have made it through
         for piece_colour, piece_score in board_info.scores.items():
             player_id = get_player_id(piece_colour)
             # If score is higher than 4 then piece colour will win
             if piece_score >= 4:
-                score[player_id] = float('inf')
+                score_points[player_id] = float('inf')
             else:
-                score[player_id] = piece_score
+                score_points[player_id] = piece_score
 
         # Weight how many friends you have: POWER IN NUMBERS !
         for piece, piece_colour in board_info.board.items():
@@ -55,18 +52,42 @@ class HeuristicJump:
             # get how many friendly pieces you have touching
             friendly_pieces = close_by_friends(
                 piece, piece_colour, board_info.board)
-            score[player_id] += 0.01 * friendly_pieces
+            score_friends[player_id] += friendly_pieces
 
         # Minus how many pieces can be capture
-        for piece, piece_colour in board_info.board.items():
-            player_id = get_player_id(piece_colour)
-            if can_be_captured(piece, player_colour, board_info.board, board_info.pure_board):
-                score[player_id] -= 1
+        # for piece, piece_colour in board_info.board.items():
+        #     player_id = get_player_id(piece_colour)
+        #     if can_be_captured(piece, player_colour, board_info.board, board_info.pure_board):
+        #         score_threatned[player_id] -= 1
 
         # Maximise the pieces you have
         for piece_colour, pieces_count in num_pieces.items():
 
             player_id = get_player_id(piece_colour)
-            score[player_id] += pieces_count
+            score_pieces_alive[player_id] += pieces_count
 
-        return score
+        # Weights for each metric
+        w_manhat = 1
+        w_friends = 0.01
+        w_points = 1
+        w_threatned = 1
+        w_pieces_alive = 1
+
+        score_list = [
+            score_manhat,
+            score_friends,
+            score_points,
+            score_threatned,
+            score_pieces_alive,
+        ]
+
+        weight_list = [
+            w_manhat,
+            w_friends,
+            w_points,
+            w_threatned,
+            w_pieces_alive,
+        ]
+
+        score_total = weighted_total_score(score_list, weight_list)
+        return score_total

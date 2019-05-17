@@ -193,6 +193,16 @@ def player_exits(player_colour):
         return []
 
 
+def weighted_total_score(score_list, weight_list):
+    score_total = [0, 0, 0]
+    for pair_score, pair_weight in zip(score_list, weight_list):
+        weighted_scored = list(map(lambda x: pair_weight*x, pair_score))
+
+        for i in range(len(score_total)):
+            score_total[i] += weighted_scored[i]
+    return score_total
+
+
 def get_player_id(player_colour):
     if player_colour == 'red':
         return 0
@@ -204,3 +214,9 @@ def get_player_id(player_colour):
 
 def manhattan_dist(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
+
+
+score_list = [[1, 2, 3], [4, 5, 6], [1, 2, 3]]
+weight_list = [1, 2, 1]
+weighted = weighted_total_score(score_list, weight_list)
+print(weighted)
