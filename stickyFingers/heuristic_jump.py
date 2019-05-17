@@ -67,11 +67,23 @@ class HeuristicJump:
             score_pieces_alive[player_id] += pieces_count
 
         # Weights for each metric
-        w_manhat = 1
-        w_friends = 0.01
+        w_manhat = 0.5
+        w_friends = 0.05
+
+        w_threatned = 0.8
+
         w_points = 1
-        w_threatned = 1
+        w_points_close = 2
+
+        w_pieces_alive_close = 0.5
         w_pieces_alive = 2
+
+        # preprocess endgames
+        for i in range(len(score_manhat)):
+            if score_manhat[i] == -1 or score_manhat[i] == 0:
+                score_manhat[i] = score_manhat[i] * w_points_close
+                score_pieces_alive[i] = score_pieces_alive[i] * \
+                    w_pieces_alive_close
 
         score_list = [
             score_manhat,
