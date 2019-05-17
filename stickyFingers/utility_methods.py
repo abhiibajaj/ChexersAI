@@ -214,9 +214,3 @@ def get_player_id(player_colour):
 
 def manhattan_dist(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
-
-
-score_list = [[1, 2, 3], [4, 5, 6], [1, 2, 3]]
-weight_list = [1, 2, 1]
-weighted = weighted_total_score(score_list, weight_list)
-print(weighted)

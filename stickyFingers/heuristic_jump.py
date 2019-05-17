@@ -71,7 +71,7 @@ class HeuristicJump:
         w_friends = 0.01
         w_points = 1
         w_threatned = 1
-        w_pieces_alive = 1
+        w_pieces_alive = 2
 
         score_list = [
             score_manhat,
