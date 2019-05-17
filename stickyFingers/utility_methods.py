@@ -170,7 +170,7 @@ def can_be_captured(piece, player_colour, board, pure_board):
                 for jump in jump_radials:
                     # if you jump over the piece, return false
                     if jumped_coord(jump) == piece:
-                        print('{} can be captured by {}'.format(piece, radial))
+                        # print('{} can be captured by {}'.format(piece, radial))
                         return True
         except KeyError:
             pass

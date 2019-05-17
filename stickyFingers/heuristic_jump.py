@@ -38,7 +38,7 @@ class HeuristicJump:
                 min_dist = min(
                     min_dist,  manhattan_dist(piece, player_exit))
 
-            score[player_id] -= ((1 / num_pieces[piece_colour]) * min_dist)
+            score[player_id] = ((1 / num_pieces[piece_colour]) * min_dist)
 
         # Account for how many pieces have made it through
         for piece_colour, piece_score in board_info.scores.items():
@@ -57,8 +57,13 @@ class HeuristicJump:
                 piece, piece_colour, board_info.board)
             score[player_id] += 0.01 * friendly_pieces
 
-        # Maximise the pieces you have
+        # Minus how many pieces can be capture
+        for piece, piece_colour in board_info.board.items():
+            player_id = get_player_id(piece_colour)
+            if can_be_captured(piece, player_colour, board_info.board, board_info.pure_board):
+                score[player_id] -= 1
 
+        # Maximise the pieces you have
         for piece_colour, pieces_count in num_pieces.items():
 
             player_id = get_player_id(piece_colour)
