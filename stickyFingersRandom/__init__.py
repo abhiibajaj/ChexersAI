@@ -1,1 +1,1 @@
-from stickyFingers.player import Player
+from stickyFingersRandom.player import Player

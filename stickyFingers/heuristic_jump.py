@@ -43,6 +43,7 @@ class HeuristicJump:
             # If score is higher than 4 then piece colour will win
             if piece_score >= 4:
                 score_points[player_id] = float('inf')
+                return score_points
             else:
                 score_points[player_id] = piece_score
 
@@ -55,10 +56,10 @@ class HeuristicJump:
             score_friends[player_id] += friendly_pieces
 
         # Minus how many pieces can be capture
-        # for piece, piece_colour in board_info.board.items():
-        #     player_id = get_player_id(piece_colour)
-        #     if can_be_captured(piece, player_colour, board_info.board, board_info.pure_board):
-        #         score_threatned[player_id] -= 1
+        for piece, piece_colour in board_info.board.items():
+            player_id = get_player_id(piece_colour)
+            if can_be_captured(piece, player_colour, board_info.board, board_info.pure_board):
+                score_threatned[player_id] -= 1
 
         # Maximise the pieces you have
         for piece_colour, pieces_count in num_pieces.items():
@@ -67,23 +68,30 @@ class HeuristicJump:
             score_pieces_alive[player_id] += pieces_count
 
         # Weights for each metric
-        w_manhat = 0.5
+        w_manhat = 0.15
         w_friends = 0.05
 
-        w_threatned = 0.8
+        w_threatned = 0.1
 
         w_points = 1
-        w_points_close = 2
+        w_points_close = 10
 
-        w_pieces_alive_close = 0.5
-        w_pieces_alive = 2
+        w_pieces_alive_close = 0
+        w_pieces_alive = 4
 
-        # preprocess endgames
-        for i in range(len(score_manhat)):
-            if score_manhat[i] == -1 or score_manhat[i] == 0:
-                score_manhat[i] = score_manhat[i] * w_points_close
-                score_pieces_alive[i] = score_pieces_alive[i] * \
-                    w_pieces_alive_close
+        w_pieces_percent = 0.60
+
+        # if you have over 60% of pieces look to exit
+        total_pieces = sum([x for x in num_pieces.values()])
+        for piece_colour, piece_count in num_pieces.items():
+            if (piece_count + board_info.scores[piece_colour] * 1.0) / total_pieces > w_pieces_percent:
+                # print("HERE FOR ", piece_colour)
+                player_id = get_player_id(piece_colour)
+                if board_info.scores[piece_colour] + piece_count >= 4:
+                    score_manhat[player_id] *= 2
+                    score_points[player_id] *= 80
+                    score_threatned[player_id] *= 10
+                    # score_pieces_alive[player_id] *= 0.8
 
         score_list = [
             score_manhat,

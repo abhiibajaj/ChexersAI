@@ -70,13 +70,16 @@ class MaxN:
                             vmax = score
                             best_a = move
 
-                    if vmax == float('inf'):
+                    if float('inf') in vmax:
+                        print('{} with action: {}'.format(vmax, best_a))
+
                         break
 
                 else:
                     pass
-                if vmax == float('inf'):
-                    break
+            # Immediately prune
+            if float('inf') in vmax:
+                break
 
         # print(str(player_colour) + " picked " +
         #       str(best_a) + " score was : " + str(vmax))
@@ -95,27 +98,9 @@ class MaxN:
 
         board_info_copy = copy.deepcopy(board_info)
         board_info_copy.update_board(player_colour, move)
-
-        for radial_move in possible_radials:
-            if radial_move in board_info.pure_board:
-                try:
-                    collision_piece = board_info_copy.board[radial_move]
-                    # can be captured
-                    if collision_piece != player_colour:
-                        # what if there is a person on the other side
-                        # get jump moves for radial move and see if it can be captured
-
-                        # print('{} at {} where {} would {}'.format(collision_piece, radial_move, player_colour, move))
-                        jump_for_radials = jump_moves(
-                            radial_move, board_info_copy.board, board_info.pure_board)
-                        for jumps in jump_for_radials:
-                            if jumped_coord(jumps) == piece:
-
-                                return False
-
-                except KeyError:
-                    pass
-        return safe_to_make
+        if can_be_captured(piece, player_colour, board_info_copy.board, board_info_copy.pure_board):
+            return False
+        return True
 
     def get_player_pieces(self, player_colour, board_info):
         player_pieces = set()

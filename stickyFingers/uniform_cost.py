@@ -6,9 +6,18 @@ class UniformCostSearch:
 
     def uniform_action(self, pieces, player_colour, board, pure_board):
 
+        if len(pieces) <= 0:
+            return ("PASS", None)
         best_path = self.get_shortest_path(
             pieces, player_colour, board, pure_board)
+
         action = best_path[0]
+        # If pathway is blocked, make a random move
+        if action == "PASS":
+            for piece in pieces:
+                possible_moves = find_moves(
+                    piece, player_colour, board, pure_board)
+                action = possible_moves[0]
         return action
 
     def get_shortest_path(self, pieces, player_colour, board, pure_board):

@@ -57,6 +57,7 @@ class Player:
 
         action_type = action[0]
         action_coords = action[1]
+        print(action)
 
         if action_type == "PASS":
             pass

@@ -1,11 +1,11 @@
 
-from stickyFingers.board import *
+from stickyFingersRandom.board import *
 import sys
 import heapq
 import random
-from stickyFingers.maxn import *
-from stickyFingers.uniform_cost import *
-from stickyFingers.utility_methods import *
+from stickyFingersRandom.maxn import *
+from stickyFingersRandom.uniform_cost import *
+from stickyFingersRandom.utility_methods import *
 from collections import defaultdict
 
 
