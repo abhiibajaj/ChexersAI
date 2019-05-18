@@ -71,9 +71,8 @@ class MaxN:
                             best_a = move
 
                     if float('inf') in vmax:
-                        print('{} with action: {}'.format(vmax, best_a))
 
-                        break
+                        return (vmax, best_a)
 
                 else:
                     pass
@@ -84,7 +83,7 @@ class MaxN:
         # print(str(player_colour) + " picked " +
         #       str(best_a) + " score was : " + str(vmax))
         # board_info.print_board(debug=True)
-
+        # print('Score {} Action {} by  {}'.format(vmax, best_a, player_colour))
         return (vmax, best_a)
 
     def safe_move(self, move, player_colour, board_info):

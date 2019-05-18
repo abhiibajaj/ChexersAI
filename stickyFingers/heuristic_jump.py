@@ -89,7 +89,7 @@ class HeuristicJump:
                 player_id = get_player_id(piece_colour)
                 if board_info.scores[piece_colour] + piece_count >= 4:
                     score_manhat[player_id] *= 2
-                    score_points[player_id] *= 80
+                    score_points[player_id] *= 500
                     score_threatned[player_id] *= 10
                     # score_pieces_alive[player_id] *= 0.8
 
