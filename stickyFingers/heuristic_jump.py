@@ -7,7 +7,7 @@ class HeuristicJump:
     def __init__(self):
         self.uniform_cost_strat = UniformCostSearch()
 
-    def score(self, player_colour, board_info):
+    def score(self, player_colour, board_info, minimax=False):
 
         score_total = [0, 0, 0]
 
@@ -71,13 +71,13 @@ class HeuristicJump:
         w_manhat = 0.15
         w_friends = 0.05
 
-        w_threatned = 0.1
+        w_threatned = 2
 
         w_points = 1
         w_points_close = 10
 
         w_pieces_alive_close = 0
-        w_pieces_alive = 4
+        w_pieces_alive = 5
 
         w_pieces_percent = 0.60
 
@@ -110,4 +110,9 @@ class HeuristicJump:
         ]
 
         score_total = weighted_total_score(score_list, weight_list)
+        if minimax:
+
+            player_id = get_player_id(player_colour)
+            print(score_total[player_id])
+            return score_total[player_id]
         return score_total
