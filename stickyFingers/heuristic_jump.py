@@ -71,13 +71,13 @@ class HeuristicJump:
         w_manhat = 0.15
         w_friends = 0.05
 
-        w_threatned = 0.1
+        w_threatned = 1
 
         w_points = 1
         w_points_close = 10
 
         w_pieces_alive_close = 0
-        w_pieces_alive = 4
+        w_pieces_alive = 10
 
         w_pieces_percent = 0.60
 
