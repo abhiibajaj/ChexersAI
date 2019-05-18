@@ -7,7 +7,7 @@ class HeuristicJump:
     def __init__(self):
         self.uniform_cost_strat = UniformCostSearch()
 
-    def score(self, player_colour, board_info, minimax=False):
+    def score(self, player_colour, board_info, prev_colour=None, minimax=False):
 
         score_total = [0, 0, 0]
 
@@ -42,11 +42,15 @@ class HeuristicJump:
             player_id = get_player_id(piece_colour)
             # If score is higher than 4 then piece colour will win
             if piece_score >= 4:
+
                 score_points[player_id] = float('inf')
 
             else:
                 score_points[player_id] = piece_score
-
+        # really dodgy way of fixing. Make better
+        if float('inf') in score_points:
+            print('{} score points'.format(score_points))
+            return float('inf')
         # Weight how many friends you have: POWER IN NUMBERS !
         for piece, piece_colour in board_info.board.items():
             player_id = get_player_id(piece_colour)
@@ -88,9 +92,10 @@ class HeuristicJump:
                 # print("HERE FOR ", piece_colour)
                 player_id = get_player_id(piece_colour)
                 if board_info.scores[piece_colour] + piece_count >= 4:
-                    score_manhat[player_id] *= 2
+                    # score_manhat[player_id] *= 2
                     score_points[player_id] *= 500
                     score_threatned[player_id] *= 10
+                    score_friends[player_id] = 0
                     # score_pieces_alive[player_id] *= 0.8
 
         score_list = [
@@ -113,6 +118,5 @@ class HeuristicJump:
         if minimax:
 
             player_id = get_player_id(player_colour)
-            # print(score_total[player_id])
             return score_total[player_id]
         return score_total
