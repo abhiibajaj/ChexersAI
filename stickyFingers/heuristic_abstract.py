@@ -9,4 +9,3 @@ class Heurisitic:
             return HeurisiticJump0()
         elif strategy == "Jump":
             return HeuristicJump()
-

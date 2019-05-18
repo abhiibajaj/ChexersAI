@@ -212,5 +212,34 @@ def get_player_id(player_colour):
         return 2
 
 
+def get_player_pieces(player_colour, board_info):
+    player_pieces = set()
+
+    for piece_coord, piece_colour in board_info.board.items():
+        if piece_colour == player_colour:
+            player_pieces.add(piece_coord)
+
+    return player_pieces
+
+
+def get_next_colour(player_colour, board_info):
+    # choose the next player
+    if player_colour == 'red':
+        next_colour = 'green'
+    elif player_colour == 'green':
+        next_colour = 'blue'
+    elif player_colour == 'blue':
+        next_colour = 'red'
+
+    # check if the player we are handing over to still has pieces
+    for _, colour in board_info.board.items():
+        # next_colour still has a piece
+        if next_colour == colour:
+            return next_colour
+
+    # recursively find the next player
+    return get_next_colour(next_colour, board_info)
+
+
 def manhattan_dist(a, b):
     return abs(a[0] - b[0]) + abs(a[1] - b[1])

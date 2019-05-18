@@ -3,6 +3,7 @@ from stickyFingers.board import *
 import sys
 import heapq
 from stickyFingers.maxn import *
+from stickyFingers.minimax import *
 from stickyFingers.openingstrat import *
 from stickyFingers.uniform_cost import *
 from stickyFingers.utility_methods import *
@@ -30,8 +31,11 @@ class Player:
         # self.exits = self.board_info.player_exits(colour)
         self.opening_flag = True
         self.maxn_flag = False
+        self.minimax_flag = False
+
         self.opening_strat = OpeningStrategy(self, self.board_info)
         self.maxn_strat = MaxN("Jump")
+        self.minimax_strat = Minimax("Jump")
         self.uniform_cost_strat = UniformCostSearch()
         self.moves_made = 0
         # self.update(colour, ("MOVE", ((-3, 0), (-2, 0))))
@@ -64,6 +68,11 @@ class Player:
 
         if len(num_pieces) == 1:
             self.maxn_flag = False
+            self.minimax_flag = False
+
+        elif len(num_pieces) == 2:
+            self.maxn_flag = False
+            self.minimax_flag = True
 
         if self.maxn_flag:
             # print("NOT OPENING")
@@ -71,8 +80,11 @@ class Player:
                                                             self.board_info,
                                                             self.colour)
             # print((score, action_to_take))
-
-        elif self.opening_flag is False and self.maxn_flag is False:
+        elif self.minimax_flag:
+            print("MINIMAX TIMEEE")
+            (score, action_to_take) = self.minimax_strat.alphabeta(
+                3, self.colour, self.board_info, float('-inf'), float('inf'), True)
+        elif self.opening_flag is False and self.maxn_flag is False and self.minimax_flag is False:
             action_to_take = self.uniform_cost_strat.uniform_action(
                 self.pieces, self.colour, self.board_info.board,
                 self.board_info.pure_board

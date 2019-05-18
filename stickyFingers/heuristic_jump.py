@@ -58,7 +58,7 @@ class HeuristicJump:
         # Minus how many pieces can be capture
         for piece, piece_colour in board_info.board.items():
             player_id = get_player_id(piece_colour)
-            if can_be_captured(piece, player_colour, board_info.board, board_info.pure_board):
+            if can_be_captured(piece, piece_colour, board_info.board, board_info.pure_board):
                 score_threatned[player_id] -= 1
 
         # Maximise the pieces you have
