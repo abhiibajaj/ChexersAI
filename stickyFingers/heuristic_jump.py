@@ -77,7 +77,7 @@ class HeuristicJump:
         w_points_close = 10
 
         w_pieces_alive_close = 0
-        w_pieces_alive = 10
+        w_pieces_alive = 5
 
         w_pieces_percent = 0.60
 
@@ -87,6 +87,7 @@ class HeuristicJump:
             if (piece_count + board_info.scores[piece_colour] * 1.0) / total_pieces > w_pieces_percent:
                 # print("HERE FOR ", piece_colour)
                 player_id = get_player_id(piece_colour)
+
                 if board_info.scores[piece_colour] + piece_count >= 4:
                     score_manhat[player_id] *= 2
                     score_points[player_id] *= 500
