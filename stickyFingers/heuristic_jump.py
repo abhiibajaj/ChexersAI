@@ -43,7 +43,7 @@ class HeuristicJump:
             # If score is higher than 4 then piece colour will win
             if piece_score >= 4:
                 score_points[player_id] = float('inf')
-                return score_points
+
             else:
                 score_points[player_id] = piece_score
 
@@ -71,7 +71,7 @@ class HeuristicJump:
         w_manhat = 0.15
         w_friends = 0.05
 
-        w_threatned = 2
+        w_threatned = 1
 
         w_points = 1
         w_points_close = 10
@@ -113,6 +113,6 @@ class HeuristicJump:
         if minimax:
 
             player_id = get_player_id(player_colour)
-            print(score_total[player_id])
+            # print(score_total[player_id])
             return score_total[player_id]
         return score_total
