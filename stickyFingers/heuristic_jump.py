@@ -47,10 +47,11 @@ class HeuristicJump:
 
             else:
                 score_points[player_id] = piece_score
-        # really dodgy way of fixing. Make better
-        if float('inf') in score_points:
-            print('{} score points'.format(score_points))
-            return float('inf')
+        # really dodgy way of fixing. Make better. only works for depth 2
+        # if float('inf') in score_points:
+        #     print('{} score points'.format(score_points))
+        #     return float('inf')
+
         # Weight how many friends you have: POWER IN NUMBERS !
         for piece, piece_colour in board_info.board.items():
             player_id = get_player_id(piece_colour)
@@ -87,16 +88,20 @@ class HeuristicJump:
 
         # if you have over 60% of pieces look to exit
         total_pieces = sum([x for x in num_pieces.values()])
-        for piece_colour, piece_count in num_pieces.items():
-            if (piece_count + board_info.scores[piece_colour] * 1.0) / total_pieces > w_pieces_percent:
-                # print("HERE FOR ", piece_colour)
-                player_id = get_player_id(piece_colour)
-                if board_info.scores[piece_colour] + piece_count >= 4:
-                    # score_manhat[player_id] *= 2
-                    score_points[player_id] *= 500
-                    score_threatned[player_id] *= 10
-                    score_friends[player_id] = 0
-                    # score_pieces_alive[player_id] *= 0.8
+        if len(num_pieces) > 1:
+            for piece_colour, piece_count in num_pieces.items():
+                if (piece_count + board_info.scores[piece_colour] * 1.0) / total_pieces > w_pieces_percent:
+                    # print("HERE FOR ", piece_colour)
+                    player_id = get_player_id(piece_colour)
+                    if board_info.scores[piece_colour] + piece_count >= 4:
+                        # score_manhat[player_id] *= 2
+                        score_points[player_id] *= 500
+                        score_threatned[player_id] *= 10
+                        score_friends[player_id] = 0
+                        # score_pieces_alive[player_id] *= 0.8
+        else:
+            if minimax:
+                return score_points[player_colour]
 
         score_list = [
             score_manhat,
