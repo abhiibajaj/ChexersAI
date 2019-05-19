@@ -75,7 +75,6 @@ class HeuristicJump:
         # Weights for each metric
         w_manhat = 0.15
         w_friends = 0.05
-
         w_threatned = 1
 
         w_points = 1
