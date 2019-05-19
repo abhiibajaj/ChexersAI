@@ -23,7 +23,12 @@ class Minimax:
 
         best_a = ('PASS', None)
 
-        if depth == 0 or self.is_terminal_board(board_info):
+        if self.is_terminal_board(board_info):
+            if maximizing_player is False:
+                return (2000 * (depth + 1), best_a)
+            else:
+                return (-2000 * (depth + 1), best_a)
+        elif depth == 0:
             evaluation = (self.strategy.score(
                 player_colour, board_info, prev_colour, True), best_a)
             return evaluation
@@ -45,8 +50,8 @@ class Minimax:
 
                     (new_value, action) = self.alphabeta(
                         depth-1, next_player, player_colour, board_info_copy, alpha, beta, False)
-                    print('{} score for {}, colour {}'.format(
-                        new_value, move, player_colour))
+                    # print('{} score for {}, colour {}'.format(
+                    # new_value, move, player_colour))
                     if new_value > value:
                         value = new_value
                         best_a = move
@@ -77,9 +82,9 @@ class Minimax:
                     (new_value, action) = self.alphabeta(
                         depth-1, next_player, player_colour, board_info_copy, alpha, beta, True)
 
-                    print('{} score for {}, colour {}'.format(
-                        new_value, move, player_colour))
-                    if new_value < value:
+                    # print('{} score for {}, colour {}'.format(
+                    # new_value, move, player_colour))
+                    if new_value <= value:
                         value = new_value
                         best_a = move
                     beta = min(beta, value)

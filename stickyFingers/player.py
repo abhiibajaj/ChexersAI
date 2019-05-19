@@ -82,7 +82,7 @@ class Player:
             # print((score, action_to_take))
         elif self.minimax_flag:
             (score, action_to_take) = self.minimax_strat.alphabeta(
-                4, self.colour, self.colour, self.board_info, float('-inf'), float('inf'), True)
+                5, self.colour, self.colour, self.board_info, float('-inf'), float('inf'), True)
         elif self.opening_flag is False and self.maxn_flag is False and self.minimax_flag is False:
             action_to_take = self.uniform_cost_strat.uniform_action(
                 self.pieces, self.colour, self.board_info.board,
