@@ -1,5 +1,5 @@
-from stickyFingers.utility_methods import *
-from stickyFingers.uniform_cost import *
+from stickyFingersRandom.utility_methods import *
+from stickyFingersRandom.uniform_cost import *
 from collections import defaultdict
 
 
@@ -106,8 +106,7 @@ class HeuristicJump:
                         # score_pieces_alive[player_id] *= 0.8
         else:
             if minimax:
-                player_id = get_player_id(player_colour)
-                return score_points[player_id]
+                return score_points[player_colour]
 
         score_list = [
             score_manhat,
