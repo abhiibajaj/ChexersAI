@@ -9,13 +9,17 @@ class OpeningStrategy:
         self.board_info = board_info
 
     def move(self):
+        """
+        Make an opening move,
+        Try and move pieces out of the starting area,
+        prioritise being near friendly pieces.
 
+        Cancel out of this phase by returning None when a piece is threatened.
+        """
         # if any of our pieces can be captured, then we want to give reign
         # to maxn as opening can't look far ahead
         for piece in self.player.pieces:
             if can_be_captured(piece, self.player.colour, self.board_info.board, self.board_info.pure_board):
-                print("WE CAN BE CAPTURED")
-
                 return None
 
         moves_count = {}
@@ -40,7 +44,9 @@ class OpeningStrategy:
         return None
 
     def closest_together(self, move, player_colour, board_info):
-
+        """
+        How many friendly pieces is a given move going to get result in.
+        """
         count = 0
         piece = move[1][1]
         possible_radials = radial_moves(piece, 1)
@@ -65,7 +71,10 @@ class OpeningStrategy:
         return count
 
     def safe_move(self, move, player_colour, board_info):
-
+        """
+        Determine if a move is 'safe' to make
+        Near friends and not capturable
+        """
         if move[0] == 'EXIT':
             return True
 
@@ -87,9 +96,6 @@ class OpeningStrategy:
                     if collision_piece != player_colour:
                         # what if there is a person on the other side
                         # get jump moves for radial move and see if it can be captured
-
-                        # print('{} at {} where {} would {}'.format(collision_piece, radial_move, player_colour, move))
-
                         # if the jump is occupied
                         jump_for_radials = jump_moves(
                             radial_move, board_info_copy.board, board_info.pure_board)

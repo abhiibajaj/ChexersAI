@@ -10,17 +10,21 @@ class Minimax:
         self.strategy = Heurisitic(strategy)
 
     def is_terminal_board(self, board_info):
-        # check that a player is 1 move away from winning
+        """
+        Check if a board has a winner
+        """
         terminal = False
-
-        # check if the new board state is terminal zz
+        # check if the new board state is terminal
         for score in board_info.scores.values():
             terminal = terminal or (score == 4)
 
         return terminal
 
     def alphabeta(self, depth, player_colour, prev_colour, board_info, alpha, beta, maximizing_player):
-
+        """
+        Minimax algorithm with alpha-beta pruning
+        Prioritise game states where we win and avoid game states where we lose
+        """
         best_a = ('PASS', None)
 
         if self.is_terminal_board(board_info):
@@ -28,7 +32,7 @@ class Minimax:
                 return (2000 * (depth + 1), best_a)
             else:
                 return (-2000 * (depth + 1), best_a)
-        elif depth == 0:
+        elif depth <= 0:
             evaluation = (self.strategy.score(
                 player_colour, board_info, prev_colour, True), best_a)
             return evaluation
@@ -50,20 +54,19 @@ class Minimax:
 
                     (new_value, action) = self.alphabeta(
                         depth-1, next_player, player_colour, board_info_copy, alpha, beta, False)
-                    # print('{} score for {}, colour {}'.format(
-                    # new_value, move, player_colour))
+
                     if new_value > value:
                         value = new_value
                         best_a = move
+
                     alpha = max(alpha, value)
+
                     if alpha >= beta:
-                        # print('prune')
                         break
                 if alpha >= beta:
                     break
-            # print(str(player_colour) + " max picked " +
-            #       str(best_a) + " score was : " + str(value))
             return (value, best_a)
+
         else:
 
             value = float('inf')
@@ -82,18 +85,14 @@ class Minimax:
                     (new_value, action) = self.alphabeta(
                         depth-1, next_player, player_colour, board_info_copy, alpha, beta, True)
 
-                    # print('{} score for {}, colour {}'.format(
-                    # new_value, move, player_colour))
-                    if new_value <= value:
+                    if new_value < value:
                         value = new_value
                         best_a = move
-                    beta = min(beta, value)
-                    if alpha >= beta:
-                        # print('prune')
 
+                    beta = min(beta, value)
+
+                    if alpha >= beta:
                         break
                 if alpha >= beta:
                     break
-            # print(str(player_colour) + " min picked " +
-            #       str(best_a) + " score was : " + str(value))
             return (value, best_a)

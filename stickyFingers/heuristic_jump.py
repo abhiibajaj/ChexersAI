@@ -8,7 +8,17 @@ class HeuristicJump:
         self.uniform_cost_strat = UniformCostSearch()
 
     def score(self, player_colour, board_info, prev_colour=None, minimax=False):
+        """
+        A heuristic that pays attention to
 
+        - manhatten distance to the exit
+        - how many friends a piece has
+        - how many points a player has
+        - how many pieces are threatened
+        - how many pieces are alive
+
+        Then apply weights to each, fine tuned by hand.
+        """
         score_total = [0, 0, 0]
 
         score_manhat = [0, 0, 0]
@@ -47,10 +57,6 @@ class HeuristicJump:
 
             else:
                 score_points[player_id] = piece_score
-        # really dodgy way of fixing. Make better. only works for depth 2
-        # if float('inf') in score_points:
-        #     print('{} score points'.format(score_points))
-        #     return float('inf')
 
         # Weight how many friends you have: POWER IN NUMBERS !
         for piece, piece_colour in board_info.board.items():

@@ -5,7 +5,10 @@ import heapq
 class UniformCostSearch:
 
     def uniform_action(self, pieces, player_colour, board, pure_board):
-
+        """
+        Find the action to take given a board state and a player
+        Aims towards the exit and nothing else
+        """
         if len(pieces) <= 0:
             return ("PASS", None)
         best_path = self.get_shortest_path(
@@ -21,6 +24,10 @@ class UniformCostSearch:
         return action
 
     def get_shortest_path(self, pieces, player_colour, board, pure_board):
+        """
+        Given a board state and a player_colour, find the best path towards
+        the exit
+        """
         all_paths = self.all_piece_paths(pieces, player_colour, board,
                                          pure_board)
 
@@ -29,7 +36,9 @@ class UniformCostSearch:
         return best_path
 
     def shortest_path(self, paths):
-
+        """
+        Given a list of paths, return the shortest
+        """
         if len(paths) == 0:
             return [("PASS", None)]
         shortest_path = None
@@ -91,6 +100,9 @@ class UniformCostSearch:
         return score
 
     def score_paths(self, paths):
+        """
+        Score a list of paths and return the best
+        """
         best_path = None
         best_score = float("inf")
         for path in paths.values():

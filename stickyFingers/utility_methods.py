@@ -24,6 +24,12 @@ def find_moves(piece, player_colour, board, pure_board):
 
 
 def jumped_coord(action):
+    """
+    Given an action, return the coordinates that were jumped over
+
+    Arguments:
+    * `action` -- a 2 tuple of coordinates (src, dest)
+    """
     # do maths
     # get player coord we jumped over
     src = action[1][0]
@@ -39,6 +45,12 @@ def jumped_coord(action):
 
 
 def piece_sign(pdir):
+    """
+    return the sign of a number
+
+    Arguments:
+    * `pdir` -- integer
+    """
     if pdir == 0:
         return 0
     elif pdir > 0:
@@ -138,6 +150,15 @@ def is_exit(piece, player_colour):
 
 
 def close_by_friends(piece, player_colour, board):
+    """
+    Helper function that returns the friendly pieces that a given piece
+    is neighbouring
+
+    Arguments:
+    * `piece` -- a 2 tuple of coordinates (x, y), taken as the center.
+    * `player_colour` -- string enum, "red", "green", "blue"
+    * `board` -- a set of pieces that represent a board
+    """
 
     # return friendly pieces that you are close to
     friendly_pieces = 0
@@ -155,7 +176,15 @@ def close_by_friends(piece, player_colour, board):
 
 
 def can_be_captured(piece, player_colour, board, pure_board):
+    """
+    Helper function that returns if a piece can be captured
 
+    Arguments:
+    * `piece` -- a 2 tuple of coordinates (x, y), taken as the center.
+    * `player_colour` -- string enum, "red", "green", "blue"
+    * `board` -- a set of pieces that represent a board
+    * `pure_board` -- all the piece coords on a board
+    """
     possible_radials = radial_moves(piece, 1)
     for radial in possible_radials:
 
@@ -181,7 +210,7 @@ def player_exits(player_colour):
     """
     Return the exits for a given piece colour
     Arguments:
-    * `player_colour` -- a String, ie. "red"
+    * `player_colour` -- string enum, "red", "green", "blue"
     """
     if player_colour == "red":
         return [(3, -3), (3, -2), (3, -1), (3, 0)]
@@ -194,6 +223,14 @@ def player_exits(player_colour):
 
 
 def weighted_total_score(score_list, weight_list):
+    """
+    Apply multiplication index wise between two lists
+    of values
+
+    Arguments:
+    * `score_list` -- array of array of values
+    * `weight_list` -- array of array ofvalues
+    """
     score_total = [0, 0, 0]
     for pair_score, pair_weight in zip(score_list, weight_list):
         weighted_scored = list(map(lambda x: pair_weight*x, pair_score))
@@ -204,6 +241,12 @@ def weighted_total_score(score_list, weight_list):
 
 
 def get_player_id(player_colour):
+    """
+    Get the id of a player
+
+    Arguments:
+    * `player_colour` -- string enum, "red", "green", "blue"
+    """
     if player_colour == 'red':
         return 0
     elif player_colour == 'green':
@@ -213,6 +256,13 @@ def get_player_id(player_colour):
 
 
 def get_player_pieces(player_colour, board_info):
+    """
+    Get the pieces of a given player
+
+    Arguments:
+    * `player_colour` -- string enum of colours
+    * `board_info` -- a Board() instance
+    """
     player_pieces = set()
 
     for piece_coord, piece_colour in board_info.board.items():
@@ -223,6 +273,13 @@ def get_player_pieces(player_colour, board_info):
 
 
 def get_next_colour(player_colour, board_info):
+    """
+    Get the player_colour that is after the given player_colour's turn
+
+    Arguments:
+    * `player_colour` -- string enum of colours
+    * `board_info` -- a Board() instance
+    """
     # choose the next player
     if player_colour == 'red':
         next_colour = 'green'
@@ -242,4 +299,11 @@ def get_next_colour(player_colour, board_info):
 
 
 def manhattan_dist(a, b):
+    """
+    Get the player_colour that is after the given player_colour's turn
+
+    Arguments:
+    * `a` -- coord, (x, y)
+    * `b` -- coord, (x, y)
+    """
     return abs(a[0] - b[0]) + abs(a[1] - b[1])

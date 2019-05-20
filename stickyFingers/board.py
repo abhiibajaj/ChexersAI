@@ -14,6 +14,9 @@ class Board:
         }
 
     def create_pieces(self):
+        """
+        Initialise the starting state of a board
+        """
         pieces = {}
         for piece in self.pieceList:
             start_coords = self.player_starts(piece)
@@ -30,7 +33,9 @@ class Board:
         return [(q, r) for q in ran for r in ran if -q-r in ran]
 
     def player_starts(self, colour):
-
+        """
+        Starting player positions
+        """
         if colour == 'red':
             return set([(-3, 0), (-3, 1), (-3, 2), (-3, 3)])
         elif colour == 'blue':
@@ -39,7 +44,9 @@ class Board:
             return set([(0, -3), (1, -3), (2, -3), (3, -3)])
 
     def update_board(self, colour, action):
-
+        """
+        Apply an action to a board state
+        """
         action_type = action[0]
         action_coords = action[1]
 
@@ -66,6 +73,9 @@ class Board:
                 self.board[jumped] = colour
 
     def print_board(self, message="", debug=False, **kwargs):
+        """
+        Print board from part A
+        """
         # Set up the board template:
         if not debug:
             # Use the normal board template (smaller, not showing coordinates)

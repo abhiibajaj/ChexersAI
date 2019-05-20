@@ -10,6 +10,9 @@ class MaxN:
         self.strategy = Heurisitic(strategy)
 
     def is_terminal_board(self, board_info):
+        """
+        Check if a board has a winner
+        """
         # check that a player is 1 move away from winning
         terminal = False
 
@@ -20,6 +23,10 @@ class MaxN:
         return terminal
 
     def max_n(self, depth, player_colour, board_info, prev_colour, curr=0):
+        """
+        MaxN algorithm
+        Prioritise game states where we win and avoid game states where we lose
+        """
         # Default action
         best_a = ("PASS", None)
 
@@ -38,8 +45,6 @@ class MaxN:
 
             # for each move this piece can make
             for move in all_moves:
-                # board_info.print_board()
-                # safe_to_make = self.safe_move(move, player_colour, board_info)
                 safe_to_make = True
                 if safe_to_make:
                     # evaluate the worth of this move
@@ -65,13 +70,10 @@ class MaxN:
                         score_vmax_other = sum(vmax)
 
                         if score_other < score_vmax_other:
-                            # print("MINIMISED {} to {} ".format(
-                            #     score_vmax_other, score_other))
                             vmax = score
                             best_a = move
 
                     if float('inf') in vmax:
-
                         return (vmax, best_a)
 
                 else:
@@ -80,14 +82,12 @@ class MaxN:
             if float('inf') in vmax:
                 break
 
-        # print(str(player_colour) + " picked " +
-        #       str(best_a) + " score was : " + str(vmax))
-        # board_info.print_board(debug=True)
-        # print('Score {} Action {} by  {}'.format(vmax, best_a, player_colour))
         return (vmax, best_a)
 
     def safe_move(self, move, player_colour, board_info):
-        # CHECK FOR COLLISIONS DON't MAKE EVEN LOOK AT MOVE IF YOU CAN BE CAPTURED
+        """
+        Check for collisions and capture states
+        """
         if move[0] == 'EXIT':
             return True
 
@@ -102,6 +102,13 @@ class MaxN:
         return True
 
     def get_player_pieces(self, player_colour, board_info):
+        """
+        Get the pieces of a given player
+
+        Arguments:
+        * `player_colour` -- string enum of colours
+        * `board_info` -- a Board() instance
+        """
         player_pieces = set()
 
         for piece_coord, piece_colour in board_info.board.items():
@@ -111,6 +118,13 @@ class MaxN:
         return player_pieces
 
     def get_next_colour(self, player_colour, board_info):
+        """
+        Get the player_colour that is after the given player_colour's turn
+
+        Arguments:
+        * `player_colour` -- string enum of colours
+        * `board_info` -- a Board() instance
+        """
         # choose the next player
         if player_colour == 'red':
             next_colour = 'green'
