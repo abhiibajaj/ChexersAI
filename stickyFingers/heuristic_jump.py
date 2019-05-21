@@ -100,9 +100,10 @@ class HeuristicJump:
 
         w_pieces_percent = 0.50
 
-        goalie_flag = False
         # try to capture if someone else is winning
         for piece_colour, piece_count in num_pieces.items():
+            goalie_flag = False
+
             player_id = get_player_id(piece_colour)
             for other_colour, other_count in num_pieces.items():
                 if piece_colour != other_colour:
@@ -112,7 +113,6 @@ class HeuristicJump:
                     if (other_count + board_info.scores[other_colour]) >= 4 \
                             and score_manhat[other_id] <= 0 \
                             and score_manhat[other_id] >= -3:
-                        # print("NEED TO BE GOALIE")
                         player_new_manhat = self.manhat_exits(
                             board_info.board, piece_colour,
                             player_exits(other_colour), num_pieces
@@ -121,10 +121,13 @@ class HeuristicJump:
                         score_manhat[player_id] = player_new_manhat * 3
 
                         break
-        if goalie_flag is False:
-            for piece_colour, piece_close_count in manhat_maps.items():
-                if piece_close_count + board_info.scores[piece_colour] >= 4:
-                    player_id = get_player_id(piece_colour)
+            # If no one else is close to winning, try get the player to win
+            if goalie_flag is False:
+
+                piece_close_count = manhat_maps[piece_colour]
+                if (piece_close_count + board_info.scores[piece_colour] >= 4):
+
+                    score_manhat[player_id] *= 5
                     score_points[player_id] *= 500
 
         score_list = [
