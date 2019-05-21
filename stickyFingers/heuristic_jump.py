@@ -119,6 +119,7 @@ class HeuristicJump:
                         )
                         goalie_flag = True
                         score_manhat[player_id] = player_new_manhat * 3
+                        score_pieces_alive[player_id] *= 2
 
                         break
             # If no one else is close to winning, try get the player to win
