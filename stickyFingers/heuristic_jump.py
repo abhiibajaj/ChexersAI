@@ -32,6 +32,7 @@ class HeuristicJump:
         for piece, piece_colour in board_info.board.items():
             num_pieces[piece_colour] += 1
 
+        manhat_maps = defaultdict(int)
         # Weight it by the manhattan distance: THIS WORKS BETTER/FASTER THAN PATH
         for piece, piece_colour in board_info.board.items():
             # if we are close to the exit, good
@@ -43,6 +44,10 @@ class HeuristicJump:
             for player_exit in exits:
                 min_dist = min(
                     min_dist,  manhattan_dist(piece, player_exit))
+
+            # count how many close pieces we have
+            if min_dist > -2:
+                manhat_maps[player_colour] += 1
 
             score_manhat[player_id] -= (
                 (1 / num_pieces[piece_colour]) * min_dist)
@@ -69,14 +74,18 @@ class HeuristicJump:
         # Minus how many pieces can be capture
         for piece, piece_colour in board_info.board.items():
             player_id = get_player_id(piece_colour)
-            if can_be_captured(piece, piece_colour, board_info.board, board_info.pure_board):
+            if can_be_captured(piece, piece_colour, board_info.board,
+                               board_info.pure_board):
                 score_threatned[player_id] -= 1
 
         # Maximise the pieces you have
         for piece_colour, pieces_count in num_pieces.items():
 
             player_id = get_player_id(piece_colour)
+            # add pieces we have
             score_pieces_alive[player_id] += pieces_count
+            # add our score
+            score_pieces_alive[player_id] += score_points[player_id]
 
         # Weights for each metric
         w_manhat = 0.15
@@ -84,30 +93,39 @@ class HeuristicJump:
         w_threatned = 1
 
         w_points = 1
-        w_points_close = 10
+        w_points_close = 1
 
         w_pieces_alive_close = 0
         w_pieces_alive = 5
 
-        w_pieces_percent = 0.60
+        w_pieces_percent = 0.50
 
-        # if you have over 60% of pieces look to exit
-        total_pieces = sum([x for x in num_pieces.values()])
-        if len(num_pieces) > 1:
-            for piece_colour, piece_count in num_pieces.items():
-                if (piece_count + board_info.scores[piece_colour] * 1.0) / total_pieces > w_pieces_percent:
-                    # print("HERE FOR ", piece_colour)
+        goalie_flag = False
+        # try to capture if someone else is winning
+        for piece_colour, piece_count in num_pieces.items():
+            player_id = get_player_id(piece_colour)
+            for other_colour, other_count in num_pieces.items():
+                if piece_colour != other_colour:
+                    other_id = get_player_id(other_colour)
+
+                    # Other player can win and has many pieces close to the exit
+                    if (other_count + board_info.scores[other_colour]) >= 4 \
+                            and score_manhat[other_id] <= 0 \
+                            and score_manhat[other_id] >= -3:
+                        # print("NEED TO BE GOALIE")
+                        player_new_manhat = self.manhat_exits(
+                            board_info.board, piece_colour,
+                            player_exits(other_colour), num_pieces
+                        )
+                        goalie_flag = True
+                        score_manhat[player_id] = player_new_manhat * 3
+
+                        break
+        if goalie_flag is False:
+            for piece_colour, piece_close_count in manhat_maps.items():
+                if piece_close_count + board_info.scores[piece_colour] >= 4:
                     player_id = get_player_id(piece_colour)
-                    if board_info.scores[piece_colour] + piece_count >= 4:
-                        # score_manhat[player_id] *= 2
-                        score_points[player_id] *= 500
-                        score_threatned[player_id] *= 10
-                        score_friends[player_id] = 0
-                        # score_pieces_alive[player_id] *= 0.8
-        else:
-            if minimax:
-                player_id = get_player_id(player_colour)
-                return score_points[player_id]
+                    score_points[player_id] *= 500
 
         score_list = [
             score_manhat,
@@ -131,3 +149,18 @@ class HeuristicJump:
             player_id = get_player_id(player_colour)
             return score_total[player_id]
         return score_total
+
+    def manhat_exits(self, board, player_colour, other_exits, num_pieces):
+
+        score_goal_manhat = 0
+        min_dist = float('inf')
+        for piece, piece_colour in board.items():
+            if piece_colour == player_colour:
+
+                for other_exit in other_exits:
+                    min_dist = min(
+                        min_dist,  manhattan_dist(piece, other_exit))
+
+            score_goal_manhat -= (
+                (1 / num_pieces[piece_colour]) * min_dist)
+        return score_goal_manhat

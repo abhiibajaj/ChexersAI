@@ -307,3 +307,13 @@ def manhattan_dist(a, b):
     * `b` -- coord, (x, y)
     """
     return abs(a[0] - b[0]) + abs(a[1] - b[1])
+
+
+def sort_moves(move):
+    move_type, _ = move
+    if move_type == "EXIT":
+        return 1
+    elif move_type == "JUMP":
+        return 2
+    else:
+        return 3

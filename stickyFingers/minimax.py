@@ -41,10 +41,14 @@ class Minimax:
             value = float('-inf')
 
             player_pieces = get_player_pieces(player_colour, board_info)
+            sorted_moves = []
+
             for piece in player_pieces:
                 all_moves = find_moves(piece, player_colour, board_info.board,
                                        board_info.pure_board)
-                for move in all_moves:
+                sorted_moves = sorted(all_moves, key=sort_moves)
+
+                for move in sorted_moves:
 
                     board_info_copy = copy.deepcopy(board_info)
                     board_info_copy.update_board(player_colour, move)
@@ -74,8 +78,8 @@ class Minimax:
             for piece in player_pieces:
                 all_moves = find_moves(piece, player_colour, board_info.board,
                                        board_info.pure_board)
-
-                for move in all_moves:
+                sorted_moves = sorted(all_moves, key=sort_moves)
+                for move in sorted_moves:
                     board_info_copy = copy.deepcopy(board_info)
                     board_info_copy.update_board(player_colour, move)
 
